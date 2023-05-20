@@ -1,102 +1,126 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:scan/controllers/employe_controller.dart';
 import 'package:scan/ui/pages/employe.page.dart';
 
+import '../../components/mytextfeild.dart';
+import '../../models/employe_model.dart';
 
 
+class ManageEmploye extends StatefulWidget {
+  final employe_model? employe ;
+  final index ;
+  const ManageEmploye({this.employe, this.index});
+
+  @override
+  State<ManageEmploye> createState() =>  _ManageEmployeState();
+}
+
+class _ManageEmployeState extends State<ManageEmploye> {
+
+  final TextEditingController id = TextEditingController();
+  final TextEditingController nom = TextEditingController();
+  final TextEditingController prenom = TextEditingController();
+  final TextEditingController departement = TextEditingController();
+  bool  iseditingmode = false ;
+  final _form_key = GlobalKey<FormState>();
 
 
-class ajouterEmp extends StatelessWidget {
+  @override
+  void initState(){
+    if (widget.index != null){
+      iseditingmode = true ;
+      id.text = widget.employe?.id ?? '';
+      nom.text = widget.employe?.nom ?? '';
+      prenom.text = widget.employe?.prenom ?? '';
+      departement.text = widget.employe?.departement ?? '';
+    }
+    else {
+      iseditingmode = false ;
+    }
 
-
-  final controllerNom = TextEditingController();
-  final controllerPrenom = TextEditingController();
-  final CollectionReference _employe = FirebaseFirestore.instance.collection('employes') ;
-  /* await _employe.add({"nom": nom, "prenom": prenom});
-     await _employe.update({"nom": nom, "prenom": prenom});
-     await _employe.doc(employeId).delete();
-   */
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Ajouter employé')),
-      body: ListView(
-           padding : EdgeInsets.all(16),
-           children : <Widget>[
-             TextField(
+      appBar: AppBar(
+          title: iseditingmode == true
+              ? Text("Modifier employé")
+              : Text("Ajouter employé")),
 
-                  controller: controllerNom,
-                  decoration: InputDecoration (
-                      labelText:'Nom' ,
-                      border: OutlineInputBorder(),
+      body: SafeArea(
+          child : SingleChildScrollView(
+            child: Column(
+              children :[
+                const SizedBox(height: 40 ),
+                Center(
+                  child: iseditingmode == true ?
+                  const Text("Modifier employé", style: TextStyle(fontSize: 30),) :
+                  const Text("Ajouter employé", style: TextStyle(fontSize: 30) ,
                   ),
-              ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child : Form (
+                    key: _form_key,  // Ajout de la clé globale du formulaire
+                    child: Column(
+                      children: [
+                        MytextField(
+                          labeledtext: "Nom" ,
+                          hintedtext:  "Nom",
+                          mycontroller: nom,),
+                        const SizedBox(height: 24 ),
 
-             const SizedBox(height: 24 ),
-
-             TextField(
-                 controller: controllerPrenom,
-                 decoration: InputDecoration (
-                       labelText:'Prenom' ,
-                       border: OutlineInputBorder(),
-
-                 ),
-             ),
-               const SizedBox(height: 24 ),
-
-             TextField(
-               decoration: InputDecoration (
-                 labelText:'Departement' ,
-                 border: OutlineInputBorder(),
-               ),
-             ),
-             const SizedBox(height: 24 ),
+                        MytextField(
+                          labeledtext: "Prénom" ,
+                          hintedtext:  "Prénom",
+                          mycontroller: prenom,),
+                        const SizedBox(height: 24 ),
 
 
-             const SizedBox(height: 32),
+                        MytextField(
+                            labeledtext: "Département" ,
+                            hintedtext:  "departement",
+                            mycontroller: departement ),
+                        const SizedBox(height: 24 ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                    onPressed: () {
+                      if (_form_key.currentState!.validate()) {
+                         _form_key.currentState!.save();
 
-               ElevatedButton(
-                  child: Text('créer'),
-                  onPressed: () {
-                   /* final  newEmploye = Employe(
-                      nom: controllerNom.text,
-                      prenom: controllerPrenom.text,
-                    );
-                  createEmploye(newEmploye);*/
-                  Navigator.pop(context);
+                        if (iseditingmode == true) {
+                          employe_controller().update_employe(employe_model(
+                              id: id.text,
+                              nom: nom.text,
+                              prenom: prenom.text,
+                              departement: departement.text));
+                        }else {
+                          employe_controller().add_employe(employe_model(
+                              nom: nom.text,
+                              prenom: prenom.text,
+                              departement: departement.text));
+                        }
+                      Navigator.pop(context);
+                    }
+                    },
 
-                   },
-               ),
+                    child: iseditingmode == true ? Text("Modifier") : Text("Créer")
 
-      ]
-      ),
+                )
+
+              ],
+
+            ),
+          )),
     );
+
   }
-
-
-  /*Future createEmploye(Employe newEmploye ) async {
-    final docEmploye = FirebaseFirestore.instance.collection('employes').doc();
-    newEmploye.id= docEmploye.id;
-    final json = newEmploye.toJson();
-    await docEmploye.set(json);
-
-  }*/
-
 }
-
-/*class Employe {
-  String nom;
-  String prenom;
-  String id;
-  Employe({
-    required this.nom,
-    required this.prenom,
-    this.id = '',
-  });
-
-  toJson() {}*/
-
-
-
-

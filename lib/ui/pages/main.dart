@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:scan/ui/pages/camera.page.dart';
 import 'package:scan/ui/pages/employe.page.dart';
 import 'package:scan/ui/pages/galerie.page.dart';
+import 'package:scan/ui/pages/scan.dart';
 import 'package:scan/ui/pages/statistique.page.dart';
-import 'package:scan/widget/Home.widget.dart';
-import 'package:scan/ui/pages/employe.ajouterEmp.dart';
+import 'package:scan/ui/pages/Home.widget.dart';
+import 'package:scan/ui/pages/ajouter_ou_modifier_emp.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'ajouter_ou_modifier_mesure.dart';
+import 'mesure.dart';
 
 void main()  async
 {
@@ -30,7 +34,7 @@ void main()  async
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp(CameraController cameraController, {super.key});
+ const MyApp(CameraController cameraController, );
 
   // This widget is the root of your application.
   @override
@@ -38,10 +42,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         "/camera":(context)=>CameraPage(),
-        "/statistique":(context)=>StatistiquePage(),
+        "/statistique":(context)=>ObjectDetectionScreen(),
         "/galerie":(context)=>GaleriePage(),
         "/employe":(context)=>EmployePage(),
-        "/ajouterEmp":(context)=>ajouterEmp(),
+        "/ajouter_ou_modifier_emp":(context)=>ManageEmploye(),
+        "/scan":(context)=>Scan(),
+        "/mesure":(context)=>Mesure(),
+        "/mesureJupe":(context)=>MesureJupe(),
+        "/mesurePantalon":(context)=>MesurePantalon(),
+        "/Managejupe":(context)=>Managejupe(),
+        "/Managepantalon":(context)=>Managepantalon(),
 
       },
       title: 'Flutter Demon',
