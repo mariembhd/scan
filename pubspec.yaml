@@ -73,7 +73,10 @@ flutter:
     - assets/labels.txt
     - assets/mobilenet_v1_1.0_224.tflite
     - assets/placeholder_image.jpg
-  #   - images/a_dot_ham.jpeg
+    - assets/admin2-removebg-preview.png
+    - assets/logo4.png
+    - assets/logo2.png
+    - assets/logo6.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

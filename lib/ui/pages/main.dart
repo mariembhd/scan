@@ -6,7 +6,7 @@ import 'package:scan/ui/pages/galerie.page.dart';
 import 'package:scan/ui/pages/resultat.dart';
 import 'package:scan/ui/pages/scan.dart';
 import 'package:scan/ui/pages/statistique.page.dart';
-import 'package:scan/ui/pages/Home.widget.dart';
+import 'package:scan/ui/pages/HomeAdmin.dart';
 import 'package:scan/ui/pages/ajouter_ou_modifier_emp.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'ajouter_ou_modifier_mesure.dart';
@@ -30,13 +30,27 @@ void main()  async
    );
 
    // Run the app with the camera controller as an argument.
-   runApp(MyApp(cameraController));
+   runApp(MyApp());
   // runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
- const MyApp(CameraController cameraController, );
 
+ final MaterialColor customColor = MaterialColor(
+   0xFF3FA4BE,
+   <int, Color>{
+     50: Color(0xFFC7E3EA),
+     100: Color(0xFFA4CFDA),
+     200: Color(0xFF7FBBCA),
+     300: Color(0xFF5CA7BA),
+     400: Color(0xFF4492AA),
+     500: Color(0xFF2E8FA8),
+     600: Color(0xFF287B94),
+     700: Color(0xFF226780),
+     800: Color(0xFF1C536C),
+     900: Color(0xFF163F58),
+   },
+ );
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -70,7 +84,7 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
 
-        primarySwatch: Colors.teal,
+        primarySwatch: customColor,
       ),
       home: HomePage(),
     );
@@ -78,19 +92,3 @@ class MyApp extends StatelessWidget {
 } // class
 
 
-/*class MyDrawer extends StatelessWidget {
-    const MyDrawer();
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        children: [
-
-
-        ],
-      ),
-    );
-  }
-
-}*/

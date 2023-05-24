@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
-import 'Home.widget.dart';
+
 import 'package:firebase_storage/firebase_storage.dart';
 
 class Scan extends StatefulWidget {
@@ -83,20 +83,15 @@ class _ScanState extends State<Scan> {
     }
   }
 
-
-
   Future<void> loadImage() async {
     try {
       final imageFile = await getImageFile();
       imageBytes = await imageFile.readAsBytes();
       imageProvider = MemoryImage(imageBytes);
-      outputs = await runInference();
-      setState(() {});
     } catch (e) {
       print('Error loading image: $e');
     }
   }
-
 
   Future<File> getImageFile() async {
     // Replace with your image loading logic
@@ -131,26 +126,42 @@ class _ScanState extends State<Scan> {
         title: Text('Scan'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(40.0),
+        padding: const EdgeInsets.all(60.0),
         child: Column(
           children: [
-           // scanner une image
-            CustomButton(
-              title: 'Scanner une pièce ',
-              icon: Icons.photo_camera,
-              onClick: () {
+            SizedBox(height: 15),
+            // scanner une image
+             ElevatedButton(
+              onPressed: () {
                 getImage(ImageSource.camera);
               },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.photo_camera),
+                  SizedBox(width: 10),
+                  Text('Scanner une image'),
+                ],
+              ),
             ),
-            SizedBox(height: 10),
-            // Importer une image
-            CustomButton(
-              title: 'Importer une image',
-              icon: Icons.photo_library,
-              onClick: () {
+
+            SizedBox(height: 5),
+           // Importer une image
+            ElevatedButton(
+              onPressed: () {
                 getImage(ImageSource.gallery);
               },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.photo_library),
+                  SizedBox(width: 10),
+                  Text('Importer une image'),
+                ],
+              ),
             ),
+
+
             SizedBox(height: 15),
 
             // champ code de l'image
@@ -165,7 +176,7 @@ class _ScanState extends State<Scan> {
             //Image(image: imageProvider),
 
             if (_image != null)
-            Image.file(
+             Image.file(
                 _image!,
                 width: 250,
                 height: 250,
