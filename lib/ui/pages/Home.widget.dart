@@ -108,7 +108,7 @@ Widget CustomButton ({
   required VoidCallback onClick,
   Color? backgroundColor, }) {
   return Container(
-    width: 250,
+    width: 225,
     child: ElevatedButton(
             onPressed: onClick,
       style: ElevatedButton.styleFrom(
@@ -119,7 +119,7 @@ Widget CustomButton ({
           Icon(icon),
           SizedBox(
             width: 20,
-            height: 45,
+            height: 55,
           ),
           Text(title) ,
         ],
@@ -149,7 +149,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: 15),
+          SizedBox(height: 30),
           ListTile(
             title: Text('Mesures',style: TextStyle(fontSize: 30),),
             leading: Icon(Icons.straighten,color: Colors.teal,size: 40),
@@ -159,7 +159,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: 15),
+          SizedBox(height: 30),
           ListTile(
             title: Text('Statistiques',style: TextStyle(fontSize: 30),),
             leading: Icon(Icons.assessment,color: Colors.teal,size: 40),
@@ -169,7 +169,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: 15),
+          SizedBox(height: 30),
           ListTile(
             title: Text('Galerie',style: TextStyle(fontSize: 30),),
             leading: Icon(Icons.image_outlined,color: Colors.teal,size: 40),
@@ -179,7 +179,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: 15),
+          SizedBox(height: 30),
           ListTile(
             title: Text('Employés',style: TextStyle(fontSize: 30),),
             leading: Icon(Icons.supervised_user_circle,color: Colors.teal,size: 40),
