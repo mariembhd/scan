@@ -20,15 +20,15 @@ class _HomePageState extends State<HomePage> {
         child: Column(
 
           children: [
-            SizedBox(height: 100),
-            /*ListTile(
+            SizedBox(height: 70),
+           ListTile(
               leading: Icon(Icons.photo_camera,color: Colors.teal,size: 100),
               contentPadding: EdgeInsets.symmetric(horizontal: 145),
               onTap: (){
                 Navigator.pushNamed(context, "/scan");
               },
             ),
-             */
+            SizedBox(height: 70),
             CustomButton(
               title:'Scan',
               icon : Icons.photo_camera,
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
             ),
 
 
-            SizedBox(height: 15),
+            SizedBox(height: 30),
             CustomButton(
               title:'Galerie',
               icon : Icons.image_outlined,
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),*/
 
-            SizedBox(height: 15),
+            SizedBox(height: 30),
             CustomButton(
               title:'Mesures',
               icon : Icons.straighten,
@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
-            SizedBox(height: 15),
+            SizedBox(height: 30),
             CustomButton(
               title:'Statistiques',
               icon : Icons.assessment,
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
 
 
 
-            SizedBox(height: 15),
+            SizedBox(height: 30),
             CustomButton(
               title:'Employés',
               icon : Icons.supervised_user_circle,
@@ -108,7 +108,7 @@ Widget CustomButton ({
   required VoidCallback onClick,
   Color? backgroundColor, }) {
   return Container(
-    width: 225,
+    width: 250,
     child: ElevatedButton(
             onPressed: onClick,
       style: ElevatedButton.styleFrom(
@@ -118,8 +118,8 @@ Widget CustomButton ({
         children: [
           Icon(icon),
           SizedBox(
-            width: 20,
-            height: 55,
+            width: 30,
+            height: 60,
           ),
           Text(title) ,
         ],
@@ -149,7 +149,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: 30),
+          SizedBox(height: 15),
           ListTile(
             title: Text('Mesures',style: TextStyle(fontSize: 30),),
             leading: Icon(Icons.straighten,color: Colors.teal,size: 40),
@@ -159,7 +159,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: 30),
+          SizedBox(height: 15),
           ListTile(
             title: Text('Statistiques',style: TextStyle(fontSize: 30),),
             leading: Icon(Icons.assessment,color: Colors.teal,size: 40),
@@ -169,7 +169,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: 30),
+          SizedBox(height: 15),
           ListTile(
             title: Text('Galerie',style: TextStyle(fontSize: 30),),
             leading: Icon(Icons.image_outlined,color: Colors.teal,size: 40),
@@ -179,7 +179,7 @@ class MyDrawer extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: 30),
+          SizedBox(height: 15),
           ListTile(
             title: Text('Employés',style: TextStyle(fontSize: 30),),
             leading: Icon(Icons.supervised_user_circle,color: Colors.teal,size: 40),
