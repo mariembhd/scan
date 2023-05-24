@@ -1,0 +1,7 @@
+Person
+Car
+Bicycle
+Motorcycle
+Bus
+book
+laptop

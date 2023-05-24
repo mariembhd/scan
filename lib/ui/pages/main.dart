@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:scan/ui/pages/camera.page.dart';
 import 'package:scan/ui/pages/employe.page.dart';
 import 'package:scan/ui/pages/galerie.page.dart';
+import 'package:scan/ui/pages/resultat.dart';
 import 'package:scan/ui/pages/scan.dart';
 import 'package:scan/ui/pages/statistique.page.dart';
 import 'package:scan/ui/pages/Home.widget.dart';
 import 'package:scan/ui/pages/ajouter_ou_modifier_emp.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'ajouter_ou_modifier_mesure.dart';
+import 'detection.dart';
 import 'mesure.dart';
 
 void main()  async
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         "/camera":(context)=>CameraPage(),
-        "/statistique":(context)=>ObjectDetectionScreen(),
+        "/statistique":(context)=>Statistique(),
         "/galerie":(context)=>GaleriePage(),
         "/employe":(context)=>EmployePage(),
         "/ajouter_ou_modifier_emp":(context)=>ManageEmploye(),
@@ -52,6 +53,9 @@ class MyApp extends StatelessWidget {
         "/mesurePantalon":(context)=>MesurePantalon(),
         "/Managejupe":(context)=>Managejupe(),
         "/Managepantalon":(context)=>Managepantalon(),
+        "/detection":(context)=>MyAppState(),
+        "/resultat":(context)=>Resultat(),
+
 
       },
       title: 'Flutter Demon',

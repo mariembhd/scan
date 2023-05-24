@@ -21,7 +21,8 @@ class _ManageEmployeState extends State<ManageEmploye> {
   final TextEditingController id = TextEditingController();
   final TextEditingController nom = TextEditingController();
   final TextEditingController prenom = TextEditingController();
-  final TextEditingController departement = TextEditingController();
+  final TextEditingController  email= TextEditingController();
+
   bool  iseditingmode = false ;
   final _form_key = GlobalKey<FormState>();
 
@@ -33,7 +34,7 @@ class _ManageEmployeState extends State<ManageEmploye> {
       id.text = widget.employe?.id ?? '';
       nom.text = widget.employe?.nom ?? '';
       prenom.text = widget.employe?.prenom ?? '';
-      departement.text = widget.employe?.departement ?? '';
+      email.text = widget.employe?.email ?? '';
     }
     else {
       iseditingmode = false ;
@@ -81,11 +82,13 @@ class _ManageEmployeState extends State<ManageEmploye> {
                         const SizedBox(height: 24 ),
 
 
+
                         MytextField(
-                            labeledtext: "Département" ,
-                            hintedtext:  "departement",
-                            mycontroller: departement ),
+                            labeledtext: "Email",
+                            hintedtext:  "Email",
+                            mycontroller: email ),
                         const SizedBox(height: 24 ),
+
                       ],
                     ),
                   ),
@@ -101,12 +104,12 @@ class _ManageEmployeState extends State<ManageEmploye> {
                               id: id.text,
                               nom: nom.text,
                               prenom: prenom.text,
-                              departement: departement.text));
+                              email: email.text));
                         }else {
                           employe_controller().add_employe(employe_model(
                               nom: nom.text,
                               prenom: prenom.text,
-                              departement: departement.text));
+                              email: email.text));
                         }
                       Navigator.pop(context);
                     }

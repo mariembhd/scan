@@ -37,15 +37,14 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^2.4.0
   cloud_firestore: ^4.3.0
-  flutter_slidable: ^1.0.2
-  camera: ^0.9.7+1
+  flutter_slidable: ^3.0.0
+  camera: ^0.10.5
   opencv_4: ^1.0.0
   image_picker: ^0.8.4+4
   path_provider: ^2.0.8
   firebase_storage: ^11.2.0
-  image: ^3.0.2
-  tflite: ^1.0.4
-
+  image: ^4.0.17
+  tflite_flutter: ^0.9.5
 
 dev_dependencies:
   flutter_test:
@@ -71,9 +70,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/object_detection_model.tflite
-    - assets/object_detection_labels.txt
-  #   - images/a_dot_burr.jpeg
+    - assets/labels.txt
+    - assets/mobilenet_v1_1.0_224.tflite
+    - assets/placeholder_image.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
