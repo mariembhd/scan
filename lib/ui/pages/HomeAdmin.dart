@@ -15,21 +15,27 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Accueil'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 15),
+
+            //SizedBox(height: 10),
 
             Positioned(
               top: 0,
               child: Image.asset(
                 'assets/logo2.png',
-                width: 325,
+
+                width: 366,
+                height: 216,
+                /*width: 325,
                 height: 200,
+                width: 466,
+                height: 192,*/
               ),
             ),
 
-           SizedBox(height: 15),
+           SizedBox(height: 10),
             /* ListTile(
               leading: Icon(Icons.photo_camera, color: Colors.teal, size: 100),
               contentPadding: EdgeInsets.symmetric(horizontal: 145),
@@ -44,7 +50,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, "/scan");
               },
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 20),
             CustomButton(
               title: 'Galerie',
               icon: Icons.image_outlined,
@@ -53,16 +59,8 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
-            /* SizedBox(height: 15),
-            CustomButton(
-              title:'Scan',
-              icon : Icons.photo_camera,
-              onClick: (){
-                Navigator.pushNamed(context, "/scan");
-              },
-            ),*/
 
-            SizedBox(height: 30),
+            SizedBox(height: 20),
             CustomButton(
               title: 'Mesures',
               icon: Icons.straighten,
@@ -70,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, "/mesure");
               },
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 20),
             CustomButton(
               title: 'Statistiques',
               icon: Icons.assessment,
@@ -78,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, "/statistique");
               },
             ),
-            SizedBox(height: 30),
+           SizedBox(height: 20),
             CustomButton(
               title: 'Employés',
               icon: Icons.supervised_user_circle,
@@ -86,6 +84,9 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, "/employe");
               },
             ),
+
+
+
 
             /*  SizedBox(height: 15),
             CustomButton(
@@ -95,6 +96,21 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, "/detection");
               },
             ),*/
+
+
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: ClipPath(
+                clipper: DoubleCurvedClipper(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 150,
+                  color: Color(0xFF16a1b1), // Replace with your desired color
+                  ),
+              ),
+            ),
+
           ],
         ),
       ),
@@ -111,7 +127,7 @@ Widget CustomButton({
   double fontSize = 25.0, // Specify the desired font size
 }) {
   return Container(
-    width: 280,
+    width: 300,
     child: ElevatedButton(
       onPressed: onClick,
       style: ElevatedButton.styleFrom(
@@ -125,7 +141,7 @@ Widget CustomButton({
           ),
           SizedBox(
             width: 35,
-            height: 60,
+            height: 65,
           ),
           Text(
             title,
@@ -140,16 +156,89 @@ Widget CustomButton({
 }
 
 
+
+class DoubleCurvedClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.moveTo(0, size.height);
+    path.lineTo(0, size.height * 0.4);
+
+    final firstControlPoint = Offset(size.width / 4, size.height * 0.3);
+    final firstEndPoint = Offset(size.width / 2, size.height * 0.4);
+    path.quadraticBezierTo(
+        firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
+
+    final secondControlPoint = Offset(size.width - (size.width / 4), size.height * 0.5);
+    final secondEndPoint = Offset(size.width, size.height * 0.4);
+    path.quadraticBezierTo(
+        secondControlPoint.dx, secondControlPoint.dy, secondEndPoint.dx, secondEndPoint.dy);
+
+    path.lineTo(size.width, size.height * 0.4);
+    path.lineTo(size.width, size.height);
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
+  }
+}
+
+
 class MyDrawer extends StatelessWidget {
   const MyDrawer();
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
+
       child: ListView(
-        children: [
-
-
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Color(0xFFF7F4E9),
+            ),
+            child: CircleAvatar(
+              radius: 30.0,
+              backgroundColor: Color(0xFFF7F4E9), // Couleur d'arrière-plan souhaitée
+              child: Icon(
+                Icons.account_circle_sharp,
+                size: 150.0,
+                //  Color(0xFF16a1b1),
+                color: Color(0xFF46494C),
+              ),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 30),
+              Text(
+                'Admin',
+                style: TextStyle(
+                  fontFamily: 'Pacifico',
+                  fontSize: 30.0,
+                  color: Color(0xFF46494C),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Responsable Qualité',
+                style: TextStyle(
+                  fontFamily: 'Source Sans Pro',
+                  color: Colors.black54,
+                  fontSize: 15.0,
+                  letterSpacing: 2.5,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

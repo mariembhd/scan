@@ -9,6 +9,8 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 
+import 'HomeAdmin.dart';
+
 class Scan extends StatefulWidget {
   @override
   _ScanState createState() => _ScanState();
@@ -122,11 +124,12 @@ class _ScanState extends State<Scan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF7F4E9),
       appBar: AppBar(
         title: Text('Scan'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(60.0),
+      body: SingleChildScrollView(
+       // padding: const EdgeInsets.all(60.0),
         child: Column(
           children: [
             SizedBox(height: 15),
@@ -165,13 +168,20 @@ class _ScanState extends State<Scan> {
             SizedBox(height: 15),
 
             // champ code de l'image
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Code de l\'image',
+            Container(
+              width: 200, // Set the desired width here
+              child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Code de l\'image',
+                ),
+                controller: _controllerCode,
               ),
-              controller: _controllerCode,
             ),
+
+
             SizedBox(height: 15),
+
+
             // afficher resultat
             //Image(image: imageProvider),
 
@@ -204,6 +214,8 @@ class _ScanState extends State<Scan> {
               ),
             // enregistrement
 
+
+            SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async {
                 // check
@@ -242,9 +254,54 @@ class _ScanState extends State<Scan> {
               },
               child: Text('Enregistrer'),
             ),
+
+           SizedBox(height: 365),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: ClipPath(
+                clipper: DoubleCurvedClipper(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 150,
+                  color: Color(0xFF16a1b1), // Replace with your desired color
+                ),
+              ),
+            ),
+
+
           ],
         ),
       ),
     );
+  }
+}
+class DoubleCurvedClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.moveTo(0, size.height);
+    path.lineTo(0, size.height * 0.4);
+
+    final firstControlPoint = Offset(size.width / 4, size.height * 0.3);
+    final firstEndPoint = Offset(size.width / 2, size.height * 0.4);
+    path.quadraticBezierTo(
+        firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
+
+    final secondControlPoint = Offset(size.width - (size.width / 4), size.height * 0.5);
+    final secondEndPoint = Offset(size.width, size.height * 0.4);
+    path.quadraticBezierTo(
+        secondControlPoint.dx, secondControlPoint.dy, secondEndPoint.dx, secondEndPoint.dy);
+
+    path.lineTo(size.width, size.height * 0.4);
+    path.lineTo(size.width, size.height);
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
   }
 }

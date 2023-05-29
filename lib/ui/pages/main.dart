@@ -36,21 +36,7 @@ void main()  async
 
 class MyApp extends StatelessWidget {
 
- final MaterialColor customColor = MaterialColor(
-   0xFF3FA4BE,
-   <int, Color>{
-     50: Color(0xFFC7E3EA),
-     100: Color(0xFFA4CFDA),
-     200: Color(0xFF7FBBCA),
-     300: Color(0xFF5CA7BA),
-     400: Color(0xFF4492AA),
-     500: Color(0xFF2E8FA8),
-     600: Color(0xFF287B94),
-     700: Color(0xFF226780),
-     800: Color(0xFF1C536C),
-     900: Color(0xFF163F58),
-   },
- );
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -63,10 +49,9 @@ class MyApp extends StatelessWidget {
         "/ajouter_ou_modifier_emp":(context)=>ManageEmploye(),
         "/scan":(context)=>Scan(),
         "/mesure":(context)=>Mesure(),
-        "/mesureJupe":(context)=>MesureJupe(),
-        "/mesurePantalon":(context)=>MesurePantalon(),
-        "/Managejupe":(context)=>Managejupe(),
-        "/Managepantalon":(context)=>Managepantalon(),
+        "/MesurePiece":(context)=>MesurePiece(),
+        "/Managemesure":(context)=>Managemesure(),
+       // "/Managepantalon":(context)=>Managepantalon(),
         "/detection":(context)=>MyAppState(),
         "/resultat":(context)=>Resultat(),
 
@@ -84,7 +69,21 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
 
-        primarySwatch: customColor,
+        primarySwatch: MaterialColor(0xFF16a1b1, {
+          50: Color(0xFFE0F3F4),
+          100: Color(0xFFB3E3E8),
+          200: Color(0xFF80D1DC),
+          300: Color(0xFF4DBFCF),
+          400: Color(0xFF26B3C7),
+          500: Color(0xFF16a1b1),
+          600: Color(0xFF1497A8),
+          700: Color(0xFF10849A),
+          800: Color(0xFF0D6D80),
+          900: Color(0xFF095862),
+        }),
+
+
+
       ),
       home: HomePage(),
     );

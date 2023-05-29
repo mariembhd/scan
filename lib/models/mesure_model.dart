@@ -1,34 +1,20 @@
 
-class pantalon_model {
-  final id, ref, tourDeTaille, largeur, longueur;
-  pantalon_model(
+
+
+
+class mesure_model {
+  final id,code, largeur, longueur,type ;
+  mesure_model(
       {
         this.id,
-        this.ref,
-        this.tourDeTaille,
+        this.code,
         this.largeur,
         this.longueur,
+        this.type
       } );
 
   // map data to firebase
   Map<String, dynamic> add_data(){
-    return { "ref": ref,"largeur": largeur , "tourDeTaille": tourDeTaille , "longueur": longueur};
-  }
-}
-
-
-class jupe_model {
-  final id,ref, largeur, longueur ;
-  jupe_model(
-      {
-        this.id,
-        this.ref,
-        this.largeur,
-        this.longueur,
-      } );
-
-  // map data to firebase
-  Map<String, dynamic> add_data(){
-    return { "ref": ref,"largeur": largeur , "longueur": longueur};
+    return { "code": code,"largeur": largeur , "longueur": longueur , "type": type};
   }
 }

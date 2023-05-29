@@ -46,6 +46,7 @@ class _ManageEmployeState extends State<ManageEmploye> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF7F4E9),
       appBar: AppBar(
           title: iseditingmode == true
               ? Text("Modifier employé")
@@ -62,7 +63,7 @@ class _ManageEmployeState extends State<ManageEmploye> {
                   const Text("Ajouter employé", style: TextStyle(fontSize: 30) ,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 40),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child : Form (
@@ -114,10 +115,20 @@ class _ManageEmployeState extends State<ManageEmploye> {
                       Navigator.pop(context);
                     }
                     },
-
-                    child: iseditingmode == true ? Text("Modifier") : Text("Créer")
-
-                )
+                    style: ElevatedButton.styleFrom(
+                      minimumSize:
+                      Size(150, 55), // Set the minimum width and height
+                      // Other button styles if needed
+                    ),
+                    child: iseditingmode == true
+                        ? Text(
+                      "Modifier",
+                      style: TextStyle(fontSize: 20),
+                    )
+                        : Text(
+                      "Ajouter",
+                      style: TextStyle(fontSize: 20),
+                    ))
 
               ],
 

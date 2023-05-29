@@ -25,9 +25,9 @@ class MytextField extends StatelessWidget{
         labelText: labeledtext,
         hintText: hintedtext,
         enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(width: 3, color: Colors.teal)) ,
+              borderSide: BorderSide(width: 3, color: Color(0xFF5CA7BA))) ,
         focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(width: 3, color: Colors.teal)),
+            borderSide: BorderSide(width: 3, color: Color(0xFF2E8FA8))),
         errorBorder: const OutlineInputBorder(
             borderSide: BorderSide(width: 3, color: Colors.red)) ,
         focusedErrorBorder: const OutlineInputBorder(

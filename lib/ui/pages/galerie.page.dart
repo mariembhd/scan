@@ -6,6 +6,8 @@ import 'package:scan/ui/pages/scan.dart';
 class ImageModel {
   final String? id;
   final String code;
+  final String? type ;
+  final String? etat ;
   final String? image;
   final Timestamp? createdAt;
 
@@ -14,6 +16,8 @@ class ImageModel {
     required this.code,
     this.image,
     this.createdAt,
+    this.etat,
+    this.type,
   });
 
   // Convert data to map for Firebase
@@ -22,13 +26,15 @@ class ImageModel {
       'code': code,
       'image': image,
       'createdAt': createdAt,
+      'type': type,
+      'etat': etat,
     };
   }
 }
 
 class GaleriePage extends StatelessWidget {
   final CollectionReference _imageCollection =
-  FirebaseFirestore.instance.collection('images');
+      FirebaseFirestore.instance.collection('images');
 
   Future<void> deleteImage(String imageId) async {
     await _imageCollection.doc(imageId).delete();
@@ -37,6 +43,7 @@ class GaleriePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF7F4E9),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/scan');
@@ -44,6 +51,7 @@ class GaleriePage extends StatelessWidget {
         child: Icon(Icons.photo_camera),
       ),
       appBar: AppBar(title: Text('Galerie')),
+
       body: SafeArea(
         child: Column(
           children: [
@@ -63,7 +71,7 @@ class GaleriePage extends StatelessWidget {
                       itemCount: documents.length,
                       itemBuilder: (context, index) {
                         Map<String, dynamic> thisItem =
-                        documents[index].data() as Map<String, dynamic>;
+                            documents[index].data() as Map<String, dynamic>;
                         ImageModel imageModel = ImageModel(
                           id: documents[index].id,
                           code: thisItem['code'],
@@ -81,35 +89,53 @@ class GaleriePage extends StatelessWidget {
                                     deleteImage(imageModel.id!);
                                   },
                                   icon: Icons.delete,
-                                  backgroundColor: Colors.teal,
+                                  backgroundColor:  Color(0xFF16a1b1),
                                 ),
                               ],
                             ),
-                            child: ListTile(
-                              tileColor: Colors.white70,
-                              title: Text('${imageModel.code}'),
-                              /*subtitle: Text(
-                                'Date: ${imageModel.createdAt?.toDate().toString()}',
-                              ),*/
-                              leading: Container(
-                                height: 80,
-                                width: 80,
-                                child: imageModel.image != null
-                                    ? Image.network(imageModel.image!) // Image from URL
-                                    : Container(),
+
+                            child:Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white, // Set the desired background color
+                                borderRadius: BorderRadius.circular(10), // Set the desired border radius
                               ),
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => ItemDetails(imageModel.id!),
-                                  ),
-                                );
-                              },
-                            ),
+                              child: ListTile(
+                                title: Row(
+                                  children: [
+                                    Image.network(
+                                      imageModel.image ?? '', // Image from URL
+                                      width: 90, // Set the desired width for the image
+                                      height: 90, // Set the desired height for the image
+                                    ),
+                                    SizedBox(width: 60), // Add more spacing between the image and code
+                                    Text(
+                                      '${imageModel.code}',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => ItemDetails(imageModel.id!),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+
+
+
+
+
+
+
+
                           ),
                         );
                       },
                     );
+
                   } else {
                     return Center(
                       child: CircularProgressIndicator(color: Colors.red),
@@ -125,16 +151,18 @@ class GaleriePage extends StatelessWidget {
   }
 }
 
+
+
+
 class ItemDetails extends StatelessWidget {
   final String itemId;
   final CollectionReference _imageCollection =
-  FirebaseFirestore.instance.collection('images');
+      FirebaseFirestore.instance.collection('images');
 
   ItemDetails(this.itemId);
 
   @override
-  Widget
-  build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Détails de l\'élément'),
@@ -149,11 +177,13 @@ class ItemDetails extends StatelessWidget {
           }
 
           if (snapshot.hasData) {
-            Map<String, dynamic> itemData = snapshot.data!.data() as Map<String, dynamic>;
+            Map<String, dynamic> itemData =
+                snapshot.data!.data() as Map<String, dynamic>;
             ImageModel imageModel = ImageModel(
               id: snapshot.data!.id,
               code: itemData['code'],
               image: itemData['image'],
+
             );
 
             return Center(
@@ -171,6 +201,10 @@ class ItemDetails extends StatelessWidget {
                   Text('Code : ${imageModel.code}'),
                   SizedBox(height: 10),
                   Text('Date: ${imageModel.createdAt?.toDate().toString()}'),
+                  SizedBox(height: 10),
+                  Text('Type: ${imageModel.type}'),
+                  SizedBox(height: 10),
+                  Text('Etat: ${imageModel.etat}'),
                 ],
               ),
             );
@@ -184,6 +218,3 @@ class ItemDetails extends StatelessWidget {
     );
   }
 }
-
-
-

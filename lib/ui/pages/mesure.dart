@@ -7,40 +7,116 @@ import '../../models/mesure_model.dart';
 import 'ajouter_ou_modifier_mesure.dart';
 
 class Mesure extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:  Color(0xFFF7F4E9),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.pushNamed(context, "/");
+        onPressed: () {
+          Navigator.pushNamed(context, "/Managemesure");
         },
-        child: Icon(Icons.add_card) ,
+        child: Icon(Icons.add_card),
       ),
       appBar: AppBar(title: Text('Mesures')),
       body: Center(
-        child: ListView(
-          children: [
-            ListTile(
-              title: Text('Mesures des jupes',style: TextStyle(fontSize: 28),),
-              leading: Icon(Icons.straighten,color: Colors.teal,size: 40),
-              contentPadding: EdgeInsets.symmetric(horizontal: 20),
-              onTap: (){
-                Navigator.pushNamed(context, "/mesureJupe");
-              },
-            ),
+        child: Container(
+          width: 300, // Set the desired width
+          decoration: BoxDecoration(
+            color: Color(0xFFF7F4E9), // Set the desired background color
+            borderRadius: BorderRadius.circular(10), // Set the desired border radius
+          ),
+          padding: EdgeInsets.all(16),
+          child: ListView(
+            children: [
+              SizedBox(height: 100),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // Set the desired background color
+                  borderRadius: BorderRadius.circular(10), // Set the desired border radius
+                ),
+                child: ListTile(
+                  title: Text(
+                    'Pantalon',
+                    style: TextStyle(fontSize: 28, color: Colors.black), // Set the desired font color
+                  ),
+                  leading: Icon(
+                    Icons.straighten,
+                    color: Color(0xFF16a1b1),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 50),
+                  onTap: () {
+                    Navigator.pushNamed(context, "/MesurePiece");
+                  },
+                ),
+              ),
 
+              SizedBox(height: 25),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // Set the desired background color
+                  borderRadius: BorderRadius.circular(10), // Set the desired border radius
+                ),
+                child: ListTile(
+                  title: Text(
+                    'Jupe',
+                    style: TextStyle(fontSize: 28, color: Colors.black), // Set the desired font color
+                  ),
+                  leading: Icon(
+                    Icons.straighten,
+                    color: Color(0xFF16a1b1),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 50),
+                  onTap: () {
+                    Navigator.pushNamed(context, "/MesurePiece");
+                  },
+                ),
+              ),
 
-            ListTile(
-              title: Text('Mesures des pantalons',style: TextStyle(fontSize: 28),),
-              leading: Icon(Icons.straighten,color: Colors.teal,size: 40),
-              contentPadding: EdgeInsets.symmetric(horizontal: 20),
-              onTap: (){
-                Navigator.pushNamed(context, "/mesurePantalon");
-              },
-            ),
+              SizedBox(height: 25),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // Set the desired background color
+                  borderRadius: BorderRadius.circular(10), // Set the desired border radius
+                ),
+                child: ListTile(
+                  title: Text(
+                    'T-shirt',
+                    style: TextStyle(fontSize: 28, color: Colors.black), // Set the desired font color
+                  ),
+                  leading: Icon(
+                    Icons.straighten,
+                    color: Color(0xFF16a1b1),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 50),
+                  onTap: () {
+                    Navigator.pushNamed(context, "/MesurePiece");
+                  },
+                ),
+              ),
 
-          ],
+              SizedBox(height: 25),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // Set the desired background color
+                  borderRadius: BorderRadius.circular(10), // Set the desired border radius
+                ),
+                child: ListTile(
+                  title: Text(
+                    'Robe',
+                    style: TextStyle(fontSize: 28, color: Colors.black), // Set the desired font color
+                  ),
+                  leading: Icon(
+                    Icons.straighten,
+                    color: Color(0xFF16a1b1),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 50),
+                  onTap: () {
+                    Navigator.pushNamed(context, "/MesurePiece");
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -48,224 +124,103 @@ class Mesure extends StatelessWidget {
 }
 
 
-class MesureJupe extends StatelessWidget {
-  //MesureJupe ({super.key}) ;
+class MesurePiece extends StatelessWidget {
+  //Mesure({super.key}) ;
 
-  final CollectionReference jupe = FirebaseFirestore.instance.collection("jupe");
+  final CollectionReference mesure =
+      FirebaseFirestore.instance.collection("mesure");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF7F4E9),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.pushNamed(context, "/Managejupe");
+        onPressed: () {
+          Navigator.pushNamed(context, "/Managemesure");
         },
-        child: Icon(Icons.add_card) ,
+        child: Icon(Icons.add_card),
       ),
-
       appBar: AppBar(title: Text('Mesures')),
       body: SafeArea(
+        child: Column(children: [
+          Expanded(
+            child: StreamBuilder(
+              stream: mesure.snapshots(),
+              builder: (context, AsyncSnapshot snapshots) {
+                if (snapshots.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.green,
+                    ),
+                  );
+                }
 
-        child: Column(
-            children: [
-
-              Expanded(
-                child: StreamBuilder(
-                  stream: jupe.snapshots(),
-                  builder: (context, AsyncSnapshot snapshots){
-                    if (snapshots.connectionState == ConnectionState.waiting){
-                      return Center(
-                        child: CircularProgressIndicator(color: Colors.green,),
-                      );
-                    }
-
-                    if (snapshots.hasData) {
-                      return ListView.builder(
-                          itemCount: snapshots.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            final DocumentSnapshot records = snapshots.data!.docs[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: Slidable(
-                                startActionPane: ActionPane(
-                                  motion: const StretchMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        final jupe = jupe_model(
-                                          id : records.id ,
-                                          ref: records["ref"] ,
-                                          longueur:  records["longueur"] ,
-                                          largeur : records["largeur"] ,
-                                        );
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: ((context) =>
-                                                    Managejupe(
-                                                      jupe: jupe,
-                                                      index: index,
-                                                    ))));
-
-                                      },
-                                      icon: Icons.edit_note,
-                                      backgroundColor: Colors.teal,
-                                    ),
-                                  ], // children
+                if (snapshots.hasData) {
+                  return ListView.builder(
+                      itemCount: snapshots.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        final DocumentSnapshot records =
+                            snapshots.data!.docs[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Slidable(
+                            startActionPane: ActionPane(
+                              motion: const StretchMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    final mesure = mesure_model(
+                                      id: records.id,
+                                      code: records["code"],
+                                      type: records["type"],
+                                      longueur: records["longueur"],
+                                      largeur: records["largeur"],
+                                    );
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: ((context) => Managemesure(
+                                                  mesure: mesure,
+                                                  index: index,
+                                                ))));
+                                  },
+                                  icon: Icons.edit_note,
+                                  backgroundColor: Color(0xFF16a1b1),
                                 ),
-
-
-                                endActionPane: ActionPane(
-                                  motion: const StretchMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        jupe_controller().delete_jupe(jupe_model(id: records.id ));
-                                      },
-                                      icon: Icons.delete,
-                                      backgroundColor: Colors.teal,
-                                    ),
-                                  ], // children
+                              ], // children
+                            ),
+                            endActionPane: ActionPane(
+                              motion: const StretchMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    mesure_controller().delete_mesure(
+                                        mesure_model(id: records.id));
+                                  },
+                                  icon: Icons.delete,
+                                  backgroundColor: Color(0xFF16a1b1),
                                 ),
+                              ], // children
+                            ),
+                            child: ListTile(
+                              tileColor: Colors.white70,
+                              title: Text(records['code']),
+                            ),
+                          ),
+                        );
+                      });
+                } // end if
 
-
-                                child: ListTile(
-                                  tileColor: Colors.white70,
-                                  title: Text(records['ref'] ),
-                                ),
-                              ),
-                            );
-                          }
-                      );
-                    } // end if
-
-
-                    else{
-                      return Center(
-                        child: CircularProgressIndicator(color: Colors.red),
-                      );
-                    }// else
-
-                  },
-                ),
-              ),
-            ] // children
-        ),
-     ),
-
-    );
-  } // widget
-} //
-
-
-
-
-
-class MesurePantalon extends StatelessWidget {
-  final CollectionReference pantalon = FirebaseFirestore.instance.collection("pantalon");
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.pushNamed(context, "/Managepantalon");
-        },
-        child: Icon(Icons.add_card) ,
-      ),
-
-      appBar: AppBar(title: Text('Mesures')),
-      body: SafeArea(
-
-        child: Column(
-            children: [
-
-              Expanded(
-                child: StreamBuilder(
-                  stream: pantalon.snapshots(),
-                  builder: (context, AsyncSnapshot snapshots){
-                    if (snapshots.connectionState == ConnectionState.waiting){
-                      return Center(
-                        child: CircularProgressIndicator(color: Colors.green,),
-                      );
-                    }
-
-                    if (snapshots.hasData) {
-                      return ListView.builder(
-                          itemCount: snapshots.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            final DocumentSnapshot records = snapshots.data!.docs[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: Slidable(
-                                startActionPane: ActionPane(
-                                  motion: const StretchMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        final pantalon = pantalon_model(
-                                          id : records.id ,
-                                          ref: records["ref"] ,
-                                          longueur:  records["longueur"] ,
-                                          largeur : records["largeur"] ,
-                                          tourDeTaille : records["tourDeTaille"] ,
-                                        );
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: ((context) =>
-                                                    Managepantalon(
-                                                      pantalon: pantalon,
-                                                      index: index,
-                                                    ))));
-
-                                      },
-                                      icon: Icons.edit_note,
-                                      backgroundColor: Colors.teal,
-                                    ),
-                                  ], // children
-                                ),
-
-
-                                endActionPane: ActionPane(
-                                  motion: const StretchMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        pantalon_controller().delete_pantalon(pantalon_model(id: records.id ));
-                                      },
-                                      icon: Icons.delete,
-                                      backgroundColor: Colors.teal,
-                                    ),
-                                  ], // children
-                                ),
-
-
-                                child: ListTile(
-                                  tileColor: Colors.white70,
-                                  title: Text(records['ref'] ),
-
-                                ),
-                              ),
-                            );
-                          }
-                      );
-                    } // end if
-
-
-                    else{
-                      return Center(
-                        child: CircularProgressIndicator(color: Colors.red),
-                      );
-                    }// else
-                  },
-                ),
-              ),
-            ] // children
-        ),
+                else {
+                  return Center(
+                    child: CircularProgressIndicator(color: Colors.red),
+                  );
+                } // else
+              },
+            ),
+          ),
+        ] // children
+            ),
       ),
     );
   } // widget
 } //
-
-
-
-
