@@ -128,8 +128,13 @@ class _ScanState extends State<Scan> {
       appBar: AppBar(
         title: Text('Scan'),
       ),
+<<<<<<< HEAD
       body: SingleChildScrollView(
        // padding: const EdgeInsets.all(60.0),
+=======
+      body: Padding(
+        padding: const EdgeInsets.all(60.0),
+>>>>>>> a15e794943000d06604781b6e014ae58fd09bbdb
         child: Column(
           children: [
             SizedBox(height: 15),
