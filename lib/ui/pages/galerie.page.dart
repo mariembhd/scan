@@ -6,8 +6,8 @@ import 'package:scan/ui/pages/scan.dart';
 class ImageModel {
   final String? id;
   final String code;
-  final String? type ;
-  final String? etat ;
+  final String? type;
+  final String? etat;
   final String? image;
   final Timestamp? createdAt;
 
@@ -51,7 +51,6 @@ class GaleriePage extends StatelessWidget {
         child: Icon(Icons.photo_camera),
       ),
       appBar: AppBar(title: Text('Galerie')),
-
       body: SafeArea(
         child: Column(
           children: [
@@ -81,61 +80,58 @@ class GaleriePage extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Slidable(
-                            endActionPane: ActionPane(
-                              motion: const StretchMotion(),
-                              children: [
-                                SlidableAction(
-                                  onPressed: (context) {
-                                    deleteImage(imageModel.id!);
+                              endActionPane: ActionPane(
+                                motion: const StretchMotion(),
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      deleteImage(imageModel.id!);
+                                    },
+                                    icon: Icons.delete,
+                                    backgroundColor: Color(0xFF16a1b1),
+                                  ),
+                                ],
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors
+                                      .white, // Set the desired background color
+                                  borderRadius: BorderRadius.circular(
+                                      10), // Set the desired border radius
+                                ),
+                                child: ListTile(
+                                  title: Row(
+                                    children: [
+                                      Image.network(
+                                        imageModel.image ??
+                                            '', // Image from URL
+                                        width:
+                                            90, // Set the desired width for the image
+                                        height:
+                                            90, // Set the desired height for the image
+                                      ),
+                                      SizedBox(
+                                          width:
+                                              60), // Add more spacing between the image and code
+                                      Text(
+                                        '${imageModel.code}',
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ItemDetails(imageModel.id!),
+                                      ),
+                                    );
                                   },
-                                  icon: Icons.delete,
-                                  backgroundColor:  Color(0xFF16a1b1),
                                 ),
-                              ],
-                            ),
-
-                            child:Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white, // Set the desired background color
-                                borderRadius: BorderRadius.circular(10), // Set the desired border radius
-                              ),
-                              child: ListTile(
-                                title: Row(
-                                  children: [
-                                    Image.network(
-                                      imageModel.image ?? '', // Image from URL
-                                      width: 90, // Set the desired width for the image
-                                      height: 90, // Set the desired height for the image
-                                    ),
-                                    SizedBox(width: 60), // Add more spacing between the image and code
-                                    Text(
-                                      '${imageModel.code}',
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                  ],
-                                ),
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => ItemDetails(imageModel.id!),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-
-
-
-
-
-
-
-
-                          ),
+                              )),
                         );
                       },
                     );
-
                   } else {
                     return Center(
                       child: CircularProgressIndicator(color: Colors.red),
@@ -151,9 +147,6 @@ class GaleriePage extends StatelessWidget {
   }
 }
 
-
-
-
 class ItemDetails extends StatelessWidget {
   final String itemId;
   final CollectionReference _imageCollection =
@@ -164,6 +157,7 @@ class ItemDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF7F4E9),
       appBar: AppBar(
         title: Text('Détails de l\'élément'),
       ),
@@ -183,7 +177,9 @@ class ItemDetails extends StatelessWidget {
               id: snapshot.data!.id,
               code: itemData['code'],
               image: itemData['image'],
-
+              createdAt: itemData['createdAt'],
+              type: itemData['type'],
+              etat: itemData['etat'],
             );
 
             return Center(

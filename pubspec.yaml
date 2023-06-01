@@ -45,6 +45,9 @@ dependencies:
   firebase_storage: ^11.2.0
   image: ^4.0.17
   tflite_flutter: ^0.9.5
+  pie_chart: ^5.3.2
+
+
 
 dev_dependencies:
   flutter_test:

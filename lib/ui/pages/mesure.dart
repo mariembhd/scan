@@ -31,17 +31,17 @@ class Mesure extends StatelessWidget {
               SizedBox(height: 100),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // Set the desired background color
+                  color: Color(0xFF16a1b1), // Set the desired background color
                   borderRadius: BorderRadius.circular(10), // Set the desired border radius
                 ),
                 child: ListTile(
                   title: Text(
                     'Pantalon',
-                    style: TextStyle(fontSize: 28, color: Colors.black), // Set the desired font color
+                    style: TextStyle(fontSize: 28, color: Colors.white,), // Set the desired font color
                   ),
                   leading: Icon(
                     Icons.straighten,
-                    color: Color(0xFF16a1b1),
+                    color: Colors.white,
                   ),
                   contentPadding: EdgeInsets.symmetric(horizontal: 50),
                   onTap: () {
@@ -53,17 +53,17 @@ class Mesure extends StatelessWidget {
               SizedBox(height: 25),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // Set the desired background color
+                  color: Color(0xFF16a1b1), // Set the desired background color
                   borderRadius: BorderRadius.circular(10), // Set the desired border radius
                 ),
                 child: ListTile(
                   title: Text(
                     'Jupe',
-                    style: TextStyle(fontSize: 28, color: Colors.black), // Set the desired font color
+                    style: TextStyle(fontSize: 28, color:Colors.white,), // Set the desired font color
                   ),
                   leading: Icon(
                     Icons.straighten,
-                    color: Color(0xFF16a1b1),
+                    color: Colors.white,
                   ),
                   contentPadding: EdgeInsets.symmetric(horizontal: 50),
                   onTap: () {
@@ -75,17 +75,17 @@ class Mesure extends StatelessWidget {
               SizedBox(height: 25),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // Set the desired background color
+                  color: Color(0xFF16a1b1), // Set the desired background color
                   borderRadius: BorderRadius.circular(10), // Set the desired border radius
                 ),
                 child: ListTile(
                   title: Text(
                     'T-shirt',
-                    style: TextStyle(fontSize: 28, color: Colors.black), // Set the desired font color
+                    style: TextStyle(fontSize: 28, color: Colors.white,), // Set the desired font color
                   ),
                   leading: Icon(
                     Icons.straighten,
-                    color: Color(0xFF16a1b1),
+                    color: Colors.white,
                   ),
                   contentPadding: EdgeInsets.symmetric(horizontal: 50),
                   onTap: () {
@@ -97,17 +97,17 @@ class Mesure extends StatelessWidget {
               SizedBox(height: 25),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // Set the desired background color
+                  color: Color(0xFF16a1b1), // Set the desired background color
                   borderRadius: BorderRadius.circular(10), // Set the desired border radius
                 ),
                 child: ListTile(
                   title: Text(
                     'Robe',
-                    style: TextStyle(fontSize: 28, color: Colors.black), // Set the desired font color
+                    style: TextStyle(fontSize: 28, color: Colors.white,), // Set the desired font color
                   ),
                   leading: Icon(
                     Icons.straighten,
-                    color: Color(0xFF16a1b1),
+                    color: Colors.white,
                   ),
                   contentPadding: EdgeInsets.symmetric(horizontal: 50),
                   onTap: () {

@@ -18,14 +18,12 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-
             //SizedBox(height: 10),
 
             Positioned(
               top: 0,
               child: Image.asset(
                 'assets/logo2.png',
-
                 width: 366,
                 height: 216,
                 /*width: 325,
@@ -35,7 +33,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-           SizedBox(height: 10),
+            SizedBox(height: 10),
             /* ListTile(
               leading: Icon(Icons.photo_camera, color: Colors.teal, size: 100),
               contentPadding: EdgeInsets.symmetric(horizontal: 145),
@@ -59,7 +57,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
-
             SizedBox(height: 20),
             CustomButton(
               title: 'Mesures',
@@ -76,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, "/statistique");
               },
             ),
-           SizedBox(height: 20),
+            SizedBox(height: 20),
             CustomButton(
               title: 'Employés',
               icon: Icons.supervised_user_circle,
@@ -84,9 +81,6 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, "/employe");
               },
             ),
-
-
-
 
             /*  SizedBox(height: 15),
             CustomButton(
@@ -97,7 +91,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),*/
 
-
             Positioned(
               bottom: 0,
               left: 0,
@@ -107,10 +100,9 @@ class _HomePageState extends State<HomePage> {
                   width: MediaQuery.of(context).size.width,
                   height: 150,
                   color: Color(0xFF16a1b1), // Replace with your desired color
-                  ),
+                ),
               ),
             ),
-
           ],
         ),
       ),
@@ -155,8 +147,6 @@ Widget CustomButton({
   );
 }
 
-
-
 class DoubleCurvedClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
@@ -166,13 +156,14 @@ class DoubleCurvedClipper extends CustomClipper<Path> {
 
     final firstControlPoint = Offset(size.width / 4, size.height * 0.3);
     final firstEndPoint = Offset(size.width / 2, size.height * 0.4);
-    path.quadraticBezierTo(
-        firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
+    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
+        firstEndPoint.dx, firstEndPoint.dy);
 
-    final secondControlPoint = Offset(size.width - (size.width / 4), size.height * 0.5);
+    final secondControlPoint =
+        Offset(size.width - (size.width / 4), size.height * 0.5);
     final secondEndPoint = Offset(size.width, size.height * 0.4);
-    path.quadraticBezierTo(
-        secondControlPoint.dx, secondControlPoint.dy, secondEndPoint.dx, secondEndPoint.dy);
+    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
+        secondEndPoint.dx, secondEndPoint.dy);
 
     path.lineTo(size.width, size.height * 0.4);
     path.lineTo(size.width, size.height);
@@ -187,24 +178,24 @@ class DoubleCurvedClipper extends CustomClipper<Path> {
   }
 }
 
-
 class MyDrawer extends StatelessWidget {
   const MyDrawer();
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-
+      backgroundColor: Color(0xFFF7F4E9),
       child: ListView(
         padding: EdgeInsets.zero,
-        children: <Widget>[
+        children: [
           DrawerHeader(
             decoration: BoxDecoration(
               color: Color(0xFFF7F4E9),
             ),
             child: CircleAvatar(
               radius: 30.0,
-              backgroundColor: Color(0xFFF7F4E9), // Couleur d'arrière-plan souhaitée
+              backgroundColor:
+              Color(0xFFF7F4E9), // Couleur d'arrière-plan souhaitée
               child: Icon(
                 Icons.account_circle_sharp,
                 size: 150.0,
@@ -215,7 +206,7 @@ class MyDrawer extends StatelessWidget {
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: [
               SizedBox(height: 30),
               Text(
                 'Admin',
@@ -237,6 +228,20 @@ class MyDrawer extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
+              SizedBox(height: 400),
+              Text(
+                'Déconnexion',
+                style: TextStyle(
+                  fontFamily: 'Source Sans Pro',
+                  color: Color(0xFF46494C),
+                  fontSize: 15.0,
+                  letterSpacing: 2.5,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+
             ],
           ),
         ],
