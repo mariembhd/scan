@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -5,8 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:tflite_flutter/tflite_flutter.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'HomeAdmin.dart';
@@ -21,6 +21,8 @@ class _ScanState extends State<Scan> {
   XFile? file;
   File? _image;
   String imageUrl = '';
+  String finalResponse = '';
+
   Future<void> getImage(ImageSource source) async {
     XFile? pickedFile = await ImagePicker().pickImage(source: source);
 
@@ -33,93 +35,30 @@ class _ScanState extends State<Scan> {
     });
 
     String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
-    // télécharger sur le firebase storage
-    // get a reference to storage root
+
+    // Upload to Firebase storage
     Reference referenceRoot = FirebaseStorage.instance.ref();
     Reference referenceDirImages = referenceRoot.child('images');
-
-    // create a reference for the image to be stored
     Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
 
     try {
-      // store the file
       await referenceImageToUpload.putFile(File(pickedFile.path));
-      // success: get the download URL
       imageUrl = await referenceImageToUpload.getDownloadURL();
     } catch (error) {}
-  } //
+  }
 
   final _reference = FirebaseFirestore.instance.collection('images');
 
-  // ajout detection
-  Interpreter? interpreter;
-  late List<String> labels;
-  late Uint8List imageBytes;
-  late ImageProvider imageProvider = _image as ImageProvider<Object>;
-  List<dynamic>? outputs;
-
-  @override
-  void initState() {
-    super.initState();
-    loadModel();
-    loadLabels();
-    loadImage();
+  Future<String> callFlaskAPI(File imageFile) async {
+    final url = 'http://127.0.0.1:5000/detect';
+    final imageBytes = await imageFile.readAsBytes();
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/octet-stream'},
+      body: imageBytes,
+    );
+    return response.body;
   }
-
-  Future<void> loadModel() async {
-    try {
-      final interpreterOptions = InterpreterOptions();
-      interpreter = await Interpreter.fromAsset('mobilenet_v1_1.0_224.tflite',
-          options: interpreterOptions);
-    } catch (e) {
-      print('Error loading model: $e');
-    }
-  }
-
-  Future<void> loadLabels() async {
-    try {
-      final labelData = await rootBundle.loadString('assets/labels.txt');
-      labels = labelData.split('\n');
-    } catch (e) {
-      print('Error loading labels: $e');
-    }
-  }
-
-  Future<void> loadImage() async {
-    try {
-      final imageFile = await getImageFile();
-      imageBytes = await imageFile.readAsBytes();
-      imageProvider = MemoryImage(imageBytes);
-    } catch (e) {
-      print('Error loading image: $e');
-    }
-  }
-
-  Future<File> getImageFile() async {
-    // Replace with your image loading logic
-    // For simplicity, this example uses a test image included in the assets folder
-    final path = _image;
-    final byteData = await rootBundle.load(path as String);
-    final file = File('${(await getTemporaryDirectory()).path}/$path');
-    await file.writeAsBytes(byteData.buffer
-        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-    return file;
-  }
-
-  Future<List<dynamic>> runInference() async {
-    try {
-      final inputs = <dynamic>[imageBytes];
-      final outputs = List.filled(1, <List<dynamic>>[]);
-
-      interpreter?.run(inputs, outputs);
-
-      return outputs[0];
-    } catch (e) {
-      print('Error running inference: $e');
-      return [];
-    }
-  }
-  // fin ajout detection
 
   @override
   Widget build(BuildContext context) {
@@ -128,15 +67,12 @@ class _ScanState extends State<Scan> {
       appBar: AppBar(
         title: Text('Scan'),
       ),
-
       body: SingleChildScrollView(
-
         padding: const EdgeInsets.all(100.0),
         child: Column(
           children: [
             SizedBox(height: 15),
-            // scanner une image
-             ElevatedButton(
+            ElevatedButton(
               onPressed: () {
                 getImage(ImageSource.camera);
               },
@@ -149,9 +85,7 @@ class _ScanState extends State<Scan> {
                 ],
               ),
             ),
-
             SizedBox(height: 5),
-           // Importer une image
             ElevatedButton(
               onPressed: () {
                 getImage(ImageSource.gallery);
@@ -165,13 +99,9 @@ class _ScanState extends State<Scan> {
                 ],
               ),
             ),
-
-
             SizedBox(height: 15),
-
-            // champ code de l'image
             Container(
-              width: 200, // Set the desired width here
+              width: 200,
               child: TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Code de l\'image',
@@ -179,48 +109,40 @@ class _ScanState extends State<Scan> {
                 controller: _controllerCode,
               ),
             ),
-
-
             SizedBox(height: 15),
-
-
-            // afficher resultat
-            //Image(image: imageProvider),
-
             if (_image != null)
-             Image.file(
+              Image.file(
                 _image!,
                 width: 250,
                 height: 250,
                 fit: BoxFit.cover,
               ),
-              //outputs = await runInference();
-              //setState(() {});
-
-           /* ElevatedButton(
+            ElevatedButton(
               onPressed: () async {
-                // check
+                if (_image == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Scanner ou importer une image')),
+                  );
+                  return;
+                }
+                final response = await callFlaskAPI(_image!);
 
-
-
+                setState(() {
+                  finalResponse = response;
+                });
               },
               child: Text('Afficher résultat'),
-            ),*/
-            if (outputs != null)
-              Column(
-                children: [
-                  Text('Inference Results:'),
-                  for (var i = 0; i < outputs!.length; i++)
-                    Text('${labels[i]}: ${outputs![i]}'),
-                ],
-              ),
-            // enregistrement
+            ),
+            Text(
+              finalResponse,
+              style: TextStyle(fontSize: 24),
+            ),
+
 
 
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async {
-                // check
                 if (imageUrl.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Scanner ou importer une image')),
@@ -241,10 +163,8 @@ class _ScanState extends State<Scan> {
                   'image': imageUrl,
                 };
 
-                // Add a new item
                 await _reference.add(dataToSend);
 
-                // clear form after submission
                 _controllerCode.clear();
                 setState(() {
                   _image = null;
@@ -256,9 +176,6 @@ class _ScanState extends State<Scan> {
               },
               child: Text('Enregistrer'),
             ),
-
-
-
           ],
         ),
       ),

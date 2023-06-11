@@ -18,7 +18,7 @@ class EmployePage extends StatelessWidget {
         onPressed: () {
           Navigator.pushNamed(context, "/ajouter_ou_modifier_emp");
         },
-        child: Icon(Icons.person),
+        child: Icon(Icons.person_add),
       ),
       appBar: AppBar(title: Text('Employés')),
       body: SafeArea(

@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       routes: {
         "/camera":(context)=>CameraPage(),
         "/statistique":(context)=>Statistique(),
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
         "/ajouter_ou_modifier_emp":(context)=>ManageEmploye(),
         "/scan":(context)=>Scan(),
         "/mesure":(context)=>Mesure(),
-        "/MesurePiece":(context)=>MesurePiece(),
+        "/MesurePantalon":(context)=>MesurePantalon(),
         "/Managemesure":(context)=>Managemesure(),
        // "/Managepantalon":(context)=>Managepantalon(),
         "/detection":(context)=>MyAppState(),

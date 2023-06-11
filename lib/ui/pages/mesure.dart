@@ -45,7 +45,7 @@ class Mesure extends StatelessWidget {
                   ),
                   contentPadding: EdgeInsets.symmetric(horizontal: 50),
                   onTap: () {
-                    Navigator.pushNamed(context, "/MesurePiece");
+                    Navigator.pushNamed(context, "/MesurePantalon");
                   },
                 ),
               ),
@@ -124,7 +124,7 @@ class Mesure extends StatelessWidget {
 }
 
 
-class MesurePiece extends StatelessWidget {
+class MesurePantalon extends StatelessWidget {
   //Mesure({super.key}) ;
 
   final CollectionReference mesure =
@@ -204,6 +204,7 @@ class MesurePiece extends StatelessWidget {
                             child: ListTile(
                               tileColor: Colors.white70,
                               title: Text(records['code']),
+
                             ),
                           ),
                         );
