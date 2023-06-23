@@ -9,8 +9,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'HomeAdmin.dart';
-
 class Scan extends StatefulWidget {
   @override
   _ScanState createState() => _ScanState();
@@ -21,8 +19,94 @@ class _ScanState extends State<Scan> {
   XFile? file;
   File? _image;
   String imageUrl = '';
-  String finalResponse = '';
+  double nW = 0.0;
+  double nH = 0.0;
+  String etat = '';
+  String? message = "";
+  String itemCode = "";
 
+
+  Future<void> sendImageToPython() async {
+    if (_image == null) {
+      return;
+    }
+
+    final request = http.MultipartRequest(
+        "POST", Uri.parse("http://192.168.1.17:8080/detect"));
+    final headers = {"Content-type": "multipart/form-data"};
+    request.files.add(http.MultipartFile(
+        'image', _image!.readAsBytes().asStream(), _image!.lengthSync(),
+        filename: _image!.path.split("/").last));
+    request.headers.addAll(headers);
+    final response = await request.send();
+    http.Response res = await http.Response.fromStream(response);
+    final resJson = jsonDecode(res.body);
+    message = resJson['message'];
+    setState(() {});
+  }
+
+
+  Future<void> fetchImageDetails() async {
+    // Send the captured image to Python
+    await sendImageToPython();
+
+    // Retrieve updated nH and nW values from Python
+    final response = await http.get(Uri.parse('http://192.168.1.17:8080/detect'));
+    if (response.statusCode == 200) {
+      final decodedData = json.decode(response.body);
+      setState(() {
+        nW = double.parse(decodedData['nW'].toString());
+        nH = double.parse(decodedData['nH'].toString());
+      });
+    } else {
+      // Handle error
+    }
+  }
+
+
+/*
+  Future<void> fetchData() async {
+    final response =
+        await http.get(Uri.parse('http://192.168.1.17:8080/detect'));
+    if (response.statusCode == 200) {
+      final decodedData = json.decode(response.body);
+      setState(() {
+        nW = double.parse(decodedData['nW'].toString());
+        nH = double.parse(decodedData['nH'].toString());
+      });
+    } else {
+      // Handle error
+    }
+  }*/
+
+  Future<String> comparaison(
+      String codeSaisi, double largeur, double longueur) async {
+    final CollectionReference _mesure =
+        FirebaseFirestore.instance.collection('mesure');
+    QuerySnapshot querySnapshot =
+        await _mesure.where('code', isEqualTo: codeSaisi).get();
+    String etat = '';
+
+    if (querySnapshot.docs.isNotEmpty) {
+      double largeurRef = (querySnapshot.docs[0].data()
+          as Map<String, dynamic>)['largeur'] as double;
+      double longueurRef = (querySnapshot.docs[0].data()
+          as Map<String, dynamic>)['longueur'] as double;
+      double tolerance = 0.5;
+
+      if ((largeurRef - largeur).abs() <= tolerance &&
+          (longueurRef - longueur).abs() <= tolerance)
+        etat = "défaillante";
+      else
+        etat = "non défaillante";
+    } else {
+      etat = "Code non trouvé";
+    }
+
+    return etat;
+  }
+
+  // getImage
   Future<void> getImage(ImageSource source) async {
     XFile? pickedFile = await ImagePicker().pickImage(source: source);
 
@@ -33,6 +117,8 @@ class _ScanState extends State<Scan> {
     setState(() {
       _image = imageTemporary;
     });
+
+
 
     String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -47,18 +133,23 @@ class _ScanState extends State<Scan> {
     } catch (error) {}
   }
 
+
+  @override
+  void initState() {
+    print('initState');
+    super.initState();
+   //fetchData();
+    fetchImageDetails();
+
+  }
+
+
+
   final _reference = FirebaseFirestore.instance.collection('images');
 
-  Future<String> callFlaskAPI(File imageFile) async {
-    final url = 'http://127.0.0.1:5000/detect';
-    final imageBytes = await imageFile.readAsBytes();
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/octet-stream'},
-      body: imageBytes,
-    );
-    return response.body;
-  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,10 +159,9 @@ class _ScanState extends State<Scan> {
         title: Text('Scan'),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(100.0),
+        padding: const EdgeInsets.all(90.0),
         child: Column(
           children: [
-            SizedBox(height: 15),
             ElevatedButton(
               onPressed: () {
                 getImage(ImageSource.camera);
@@ -110,36 +200,68 @@ class _ScanState extends State<Scan> {
               ),
             ),
             SizedBox(height: 15),
-            if (_image != null)
-              Image.file(
-                _image!,
-                width: 250,
-                height: 250,
-                fit: BoxFit.cover,
-              ),
+
+
+
+            // affichage
             ElevatedButton(
               onPressed: () async {
-                if (_image == null) {
+                if (_image != null) {
+                  await fetchImageDetails();
+                } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Scanner ou importer une image')),
+                      SnackBar(content: Text('Veuillez d abord scanner ou importer une image.')),
+                  );
+                }
+                if (_controllerCode.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Le champ code est requis')),
                   );
                   return;
                 }
-                final response = await callFlaskAPI(_image!);
 
-                setState(() {
-                  finalResponse = response;
+
+                String itemCode = _controllerCode.text;
+                comparaison(itemCode, nW, nH).then((value) {
+                  setState(() {
+                    etat = value;
+                  });
                 });
               },
               child: Text('Afficher résultat'),
-            ),
-            Text(
-              finalResponse,
-              style: TextStyle(fontSize: 24),
+
             ),
 
+            // ...
+
+            if (_image != null)
+              Column(
+                children: [
+                  Image.file(
+                    _image!,
+                    width: 250,
+                    height: 250,
+                    fit: BoxFit.cover,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Largeur : $nW cm',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  Text(
+                    'Longueur : $nH cm',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  Text(
+                    'Etat :  $etat',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
 
 
+
+            // enregistrement
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async {
@@ -161,6 +283,10 @@ class _ScanState extends State<Scan> {
                 Map<String, String> dataToSend = {
                   'code': itemCode,
                   'image': imageUrl,
+                  'largeur': nW.toString(),
+                  'longueur': nH.toString(),
+                  'etat': etat,
+                  'type': itemCode.substring(0, itemCode.length - 3),
                 };
 
                 await _reference.add(dataToSend);

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class HomeAdmin extends StatefulWidget {
+class HomeEmp extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomeAdmin> {
+class _HomePageState extends State<HomeEmp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,9 +18,7 @@ class _HomePageState extends State<HomeAdmin> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            //SizedBox(height: 10),
-
-            Positioned(
+              Positioned(
               top: 0,
               child: Image.asset(
                 'assets/logo2.png',
@@ -33,7 +31,7 @@ class _HomePageState extends State<HomeAdmin> {
               ),
             ),
 
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             /* ListTile(
               leading: Icon(Icons.photo_camera, color: Colors.teal, size: 100),
               contentPadding: EdgeInsets.symmetric(horizontal: 145),
@@ -48,7 +46,7 @@ class _HomePageState extends State<HomeAdmin> {
                 Navigator.pushNamed(context, "/scan");
               },
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             CustomButton(
               title: 'Galerie',
               icon: Icons.image_outlined,
@@ -57,7 +55,7 @@ class _HomePageState extends State<HomeAdmin> {
               },
             ),
 
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             CustomButton(
               title: 'Mesures',
               icon: Icons.straighten,
@@ -65,7 +63,7 @@ class _HomePageState extends State<HomeAdmin> {
                 Navigator.pushNamed(context, "/mesure");
               },
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             CustomButton(
               title: 'Statistiques',
               icon: Icons.assessment,
@@ -73,23 +71,7 @@ class _HomePageState extends State<HomeAdmin> {
                 Navigator.pushNamed(context, "/statistique");
               },
             ),
-            SizedBox(height: 20),
-            CustomButton(
-              title: 'Employés',
-              icon: Icons.supervised_user_circle,
-              onClick: () {
-                Navigator.pushNamed(context, "/employe");
-              },
-            ),
-
-            /*  SizedBox(height: 15),
-            CustomButton(
-              title:'ObjectDetectionScreen',
-              icon : Icons.straighten,
-              onClick: (){
-                Navigator.pushNamed(context, "/detection");
-              },
-            ),*/
+            SizedBox(height: 35),
 
             Positioned(
               bottom: 0,
@@ -160,7 +142,7 @@ class DoubleCurvedClipper extends CustomClipper<Path> {
         firstEndPoint.dx, firstEndPoint.dy);
 
     final secondControlPoint =
-        Offset(size.width - (size.width / 4), size.height * 0.5);
+    Offset(size.width - (size.width / 4), size.height * 0.5);
     final secondEndPoint = Offset(size.width, size.height * 0.4);
     path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
         secondEndPoint.dx, secondEndPoint.dy);
@@ -209,7 +191,7 @@ class MyDrawer extends StatelessWidget {
             children: [
               SizedBox(height: 30),
               Text(
-                'Admin',
+                'Employé',
                 style: TextStyle(
                   fontFamily: 'Pacifico',
                   fontSize: 30.0,

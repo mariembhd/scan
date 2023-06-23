@@ -10,7 +10,8 @@ class ImageModel {
   final String? etat;
   final String? image;
   final Timestamp? createdAt;
-
+  final String? longueur;
+  final String? largeur;
   ImageModel({
     this.id,
     required this.code,
@@ -18,6 +19,8 @@ class ImageModel {
     this.createdAt,
     this.etat,
     this.type,
+    this.longueur,
+    this.largeur,
   });
 
   // Convert data to map for Firebase
@@ -28,6 +31,8 @@ class ImageModel {
       'createdAt': createdAt,
       'type': type,
       'etat': etat,
+      'largeur': largeur,
+      'longueur': longueur,
     };
   }
 }
@@ -48,7 +53,7 @@ class GaleriePage extends StatelessWidget {
         onPressed: () {
           Navigator.pushNamed(context, '/scan');
         },
-        child: Icon(Icons.photo_camera),
+        child: Icon(Icons.add_a_photo),
       ),
       appBar: AppBar(title: Text('Galerie')),
       body: SafeArea(
@@ -76,6 +81,8 @@ class GaleriePage extends StatelessWidget {
                           code: thisItem['code'],
                           image: thisItem['image'],
                           createdAt: thisItem['createdAt'],
+                          largeur: thisItem['largeur'],
+                          longueur: thisItem['longueur']
                         );
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),
@@ -180,6 +187,8 @@ class ItemDetails extends StatelessWidget {
               createdAt: itemData['createdAt'],
               type: itemData['type'],
               etat: itemData['etat'],
+              longueur: itemData['longueur'],
+              largeur: itemData['largeur'],
             );
 
             return Center(
@@ -199,6 +208,10 @@ class ItemDetails extends StatelessWidget {
                   Text('Date: ${imageModel.createdAt?.toDate().toString()}'),
                   SizedBox(height: 10),
                   Text('Type: ${imageModel.type}'),
+                  SizedBox(height: 10),
+                  Text('Largeur: ${imageModel.largeur}'),
+                  SizedBox(height: 10),
+                  Text('Longueur: ${imageModel.longueur}'),
                   SizedBox(height: 10),
                   Text('Etat: ${imageModel.etat}'),
                 ],

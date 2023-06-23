@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:scan/ui/pages/camera.page.dart';
 import 'package:scan/ui/pages/employe.page.dart';
@@ -9,6 +8,7 @@ import 'package:scan/ui/pages/statistique.page.dart';
 import 'package:scan/ui/pages/HomeAdmin.dart';
 import 'package:scan/ui/pages/ajouter_ou_modifier_emp.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'HomeEmp.dart';
 import 'ajouter_ou_modifier_mesure.dart';
 import 'detection.dart';
 import 'mesure.dart';
@@ -20,16 +20,6 @@ void main()  async
 
    WidgetsFlutterBinding.ensureInitialized();
 
-   // Obtain a list of available cameras on the device.
-   final List<CameraDescription> cameras = await availableCameras();
-
-   // Get a specific camera from the list of available cameras.
-   final CameraController cameraController = CameraController(
-     cameras[0],
-     ResolutionPreset.medium,
-   );
-
-   // Run the app with the camera controller as an argument.
    runApp(MyApp());
   // runApp(const MyApp());
 }
@@ -51,8 +41,10 @@ class MyApp extends StatelessWidget {
         "/scan":(context)=>Scan(),
         "/mesure":(context)=>Mesure(),
         "/MesurePantalon":(context)=>MesurePantalon(),
+        "/MesureJupe":(context)=>MesureJupe(),
+        "/MesureTshirt":(context)=>MesureTshirt(),
+        "/MesureRobe":(context)=>MesureRobe(),
         "/Managemesure":(context)=>Managemesure(),
-       // "/Managepantalon":(context)=>Managepantalon(),
         "/detection":(context)=>MyAppState(),
         "/resultat":(context)=>Resultat(),
 
@@ -86,7 +78,7 @@ class MyApp extends StatelessWidget {
 
 
       ),
-      home: HomePage(),
+      home: HomeAdmin(),
     );
   } //   Widget
 } // class
