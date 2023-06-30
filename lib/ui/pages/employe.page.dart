@@ -87,6 +87,14 @@ class EmployePage extends StatelessWidget {
                               title: Text(records['nom']),
                               subtitle: Text(records['prenom']),
                               trailing: Text(records['email']),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DroitDAcces(records.id),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         );
@@ -97,7 +105,9 @@ class EmployePage extends StatelessWidget {
                   return Center(
                     child: CircularProgressIndicator(color: Colors.red),
                   );
-                } // else
+                }
+
+                // else
               },
             ),
           ),
@@ -107,3 +117,69 @@ class EmployePage extends StatelessWidget {
     );
   } // widget
 } //
+
+class DroitDAcces extends StatelessWidget {
+  final String itemId;
+  DroitDAcces(this.itemId);
+  final CollectionReference _employe =
+  FirebaseFirestore.instance.collection('employes');
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFFF7F4E9),
+      appBar: AppBar(
+        title: Text('Droits d accés'),
+      ),
+      body: FutureBuilder<DocumentSnapshot>(
+        future: _employe.doc(itemId).get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(color: Colors.green),
+            );
+          }
+          if (snapshot.hasData) {
+            Map<String, dynamic>? itemData =
+            snapshot.data!.data() as Map<String, dynamic>?;
+
+            if (itemData != null && itemData.containsKey('email')) {
+              employe_model EmpModel = employe_model(
+                id: snapshot.data!.id,
+                nom: itemData['nom'] as String,
+                prenom: itemData['prenom'] as String,
+                email: itemData['email'] as String,
+              );
+
+              return SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10),
+                      Text('Prenom : ${EmpModel.prenom}'),
+                      SizedBox(height: 10),
+                      Text('Nom : ${EmpModel.nom}'),
+                      SizedBox(height: 10),
+                      Text('Email : ${EmpModel.email}'),
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              return Center(
+                child: Text('Champ nom non trouvé dans les données'),
+              );
+            }
+          } else {
+            return Center(
+              child: Text('Erreur lors du chargement des données'),
+            );
+          }
+        },
+      ),
+    );
+  }
+}

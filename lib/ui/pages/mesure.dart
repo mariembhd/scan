@@ -158,7 +158,7 @@ class MesurePantalon extends StatelessWidget {
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection("mesure")
-                  .where('type', isEqualTo: 'Pantalon')
+                  .where('type', isEqualTo: 'pantalon')
                   .snapshots(),
               builder: (context, AsyncSnapshot snapshots) {
                   if (snapshots.connectionState == ConnectionState.waiting) {
@@ -269,7 +269,7 @@ class MesureRobe extends StatelessWidget {
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection("mesure")
-                  .where('type', isEqualTo: 'Robe')
+                  .where('type', isEqualTo: 'robe')
                   .snapshots(),
               builder: (context, AsyncSnapshot snapshots) {
                 if (snapshots.connectionState == ConnectionState.waiting) {
@@ -378,7 +378,7 @@ class MesureTshirt extends StatelessWidget {
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection("mesure")
-                  .where('type', isEqualTo: 'T-shirt')
+                  .where('type', isEqualTo: 't-shirt')
                   .snapshots(),
               builder: (context, AsyncSnapshot snapshots) {
                 if (snapshots.connectionState == ConnectionState.waiting) {
@@ -488,7 +488,7 @@ class MesureJupe extends StatelessWidget {
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection("mesure")
-                  .where('type', isEqualTo: 'Jupe')
+                  .where('type', isEqualTo: 'jupe')
                   .snapshots(),
               builder: (context, AsyncSnapshot snapshots) {
                 if (snapshots.connectionState == ConnectionState.waiting) {

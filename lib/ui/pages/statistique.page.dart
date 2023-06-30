@@ -12,13 +12,12 @@ class Statistique extends StatefulWidget {
 class _StatistiqueState extends State<Statistique> {
   final CollectionReference _imageCollection =
   FirebaseFirestore.instance.collection('images');
-
-  late double nbPantalon;
-  late double nbJupe;
-  late double nbTshirt;
-  late double nbRobe;
-  late double nbPiecesDefaillantes;
-  late double nbPiecesNonDefaillantes;
+  double nbPantalon = 0;
+  double nbJupe = 0;
+  double nbTshirt = 0;
+  double nbRobe = 0;
+  double nbPiecesDefaillantes = 0;
+  double nbPiecesNonDefaillantes = 0;
 
   Future<double> getNbPantalonDefaillants() async {
     QuerySnapshot querySnapshot = await _imageCollection
@@ -112,6 +111,9 @@ class _StatistiqueState extends State<Statistique> {
     double count = querySnapshot.size.toDouble();
     return count;
   }
+
+
+
 
   Future<void> loadData() async {
     // pantalon

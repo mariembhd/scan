@@ -25,7 +25,7 @@ class _ManageMesureState extends State<Managemesure> {
   final TextEditingController largeur = TextEditingController();
   final TextEditingController type = TextEditingController();
 
-  List<String> typeChoices = ['Pantalon', 'Jupe', 'T-shirt', 'Robe'];
+  List<String> typeChoices = ['pantalon', 'jupe', 't-shirt', 'robe'];
   String? selectedType;
 
   bool iseditingmode = false;
