@@ -39,7 +39,6 @@ class _ManageMesureState extends State<Managemesure> {
       code.text = widget.mesure?.code ?? '';
       largeur.text = widget.mesure?.largeur ?? '';
       longueur.text = widget.mesure?.longueur ?? '';
-      //type.text = widget.mesure?.type ?? '';
       selectedType = widget.mesure?.type ?? null; // Set the initial value
     } else {
       iseditingmode = false;
@@ -81,10 +80,6 @@ class _ManageMesureState extends State<Managemesure> {
                     key: _form_key, // Ajout de la clé globale du formulaire
                     child: Column(
                       children: [
-                        /* MytextField(
-                          labeledtext: "Type" ,
-                          hintedtext:  "Type",
-                          mycontroller: type,),*/
 
                         const SizedBox(height: 28),
                         DropdownButtonFormField<String>(
@@ -168,18 +163,7 @@ class _ManageMesureState extends State<Managemesure> {
             ),
           ),
           const SizedBox(height: 1100),
-          /* Positioned(
-            bottom: 0,
-            left: 0,
-            child: ClipPath(
-              clipper: DoubleCurvedClipper(),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 88,
-                color: Color(0xFF16a1b1), // Replace with your desired color
-              ),
-            ),
-          ),*/
+
         ],
       ),
     );

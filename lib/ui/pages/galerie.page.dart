@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:scan/ui/pages/scan.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class ImageModel {
   final String? id;
@@ -9,7 +11,7 @@ class ImageModel {
   final String? type;
   final String? etat;
   final String? image;
-  final Timestamp? createdAt;
+  final String? createdAt;
   final String? longueur;
   final String? largeur;
   ImageModel({
@@ -39,7 +41,7 @@ class ImageModel {
 
 class GaleriePage extends StatelessWidget {
   final CollectionReference _imageCollection =
-      FirebaseFirestore.instance.collection('images');
+  FirebaseFirestore.instance.collection('images');
 
   Future<void> deleteImage(String imageId) async {
     await _imageCollection.doc(imageId).delete();
@@ -47,6 +49,7 @@ class GaleriePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('fr_FR'); // Initialize locale data for 'fr_FR'
     return Scaffold(
       backgroundColor: Color(0xFFF7F4E9),
       floatingActionButton: FloatingActionButton(
@@ -75,14 +78,14 @@ class GaleriePage extends StatelessWidget {
                       itemCount: documents.length,
                       itemBuilder: (context, index) {
                         Map<String, dynamic> thisItem =
-                            documents[index].data() as Map<String, dynamic>;
+                        documents[index].data() as Map<String, dynamic>;
                         ImageModel imageModel = ImageModel(
-                          id: documents[index].id,
-                          code: thisItem['code'],
-                          image: thisItem['image'],
-                          createdAt: thisItem['createdAt'],
-                          largeur: thisItem['largeur'],
-                          longueur: thisItem['longueur']
+                            id: documents[index].id,
+                            code: thisItem['code'],
+                            image: thisItem['image'],
+                            createdAt: thisItem['createdAt'],
+                            largeur: thisItem['largeur'],
+                            longueur: thisItem['longueur']
                         );
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),
@@ -113,13 +116,13 @@ class GaleriePage extends StatelessWidget {
                                         imageModel.image ??
                                             '', // Image from URL
                                         width:
-                                            90, // Set the desired width for the image
+                                        90, // Set the desired width for the image
                                         height:
-                                            90, // Set the desired height for the image
+                                        90, // Set the desired height for the image
                                       ),
                                       SizedBox(
                                           width:
-                                              60), // Add more spacing between the image and code
+                                          60), // Add more spacing between the image and code
                                       Text(
                                         '${imageModel.code}',
                                         style: TextStyle(fontSize: 18),
@@ -157,7 +160,7 @@ class GaleriePage extends StatelessWidget {
 class ItemDetails extends StatelessWidget {
   final String itemId;
   final CollectionReference _imageCollection =
-      FirebaseFirestore.instance.collection('images');
+  FirebaseFirestore.instance.collection('images');
 
   ItemDetails(this.itemId);
 
@@ -179,7 +182,7 @@ class ItemDetails extends StatelessWidget {
 
           if (snapshot.hasData) {
             Map<String, dynamic> itemData =
-                snapshot.data!.data() as Map<String, dynamic>;
+            snapshot.data!.data() as Map<String, dynamic>;
             ImageModel imageModel = ImageModel(
               id: snapshot.data!.id,
               code: itemData['code'],
@@ -190,38 +193,39 @@ class ItemDetails extends StatelessWidget {
               longueur: itemData['longueur'],
               largeur: itemData['largeur'],
             );
+            print('createdAt $imageModel.createdAt');
 
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    height: 200,
-                    width: 200,
-                    child: imageModel.image != null
-                        ? Image.network(imageModel.image!) // Image from URL
-                        : Container(),
-                  ),
-                  SizedBox(height: 20),
-                  Text('Code : ${imageModel.code}'),
+                Container(
+                height: 200,
+                width: 200,
+                child: imageModel.image != null
+                    ? Image.network(imageModel.image!) // Image from URL
+                    : Container(),
+              ),
+              SizedBox(height: 20),
+              Text('Code : ${imageModel.code}'),
+              SizedBox(height: 10),
+                  Text('Date : ${imageModel.createdAt}'),
                   SizedBox(height: 10),
-                  Text('Date : ${imageModel.createdAt?.toDate().toString()}'),
-                  SizedBox(height: 10),
-                  Text('Type : ${imageModel.type}'),
-                  SizedBox(height: 10),
-                  Text('Largeur : ${imageModel.largeur}'),
-                  SizedBox(height: 10),
-                  Text('Longueur : ${imageModel.longueur}'),
-                  SizedBox(height: 10),
-                  Text('Etat : ${imageModel.etat}'),
+                Text('Type : ${imageModel.type}'),
+                SizedBox(height: 10),
+                Text('Largeur : ${imageModel.largeur}'),
+                SizedBox(height: 10),
+                Text('Longueur : ${imageModel.longueur}'),
+                SizedBox(height: 10),
+                Text('Etat : ${imageModel.etat}'),
                 ],
               ),
             );
           } else {
-            return Center(
-              child: Text('Erreur lors du chargement des données'),
-            );
-          }
+          return Center(
+          child: Text('Erreur lors du chargement des données'),
+          );
+        }
         },
       ),
     );

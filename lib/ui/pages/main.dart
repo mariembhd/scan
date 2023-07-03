@@ -5,22 +5,22 @@ import 'package:scan/ui/pages/galerie.page.dart';
 import 'package:scan/ui/pages/resultat.dart';
 import 'package:scan/ui/pages/scan.dart';
 import 'package:scan/ui/pages/statistique.page.dart';
-import 'package:scan/ui/pages/HomeAdmin.dart';
 import 'package:scan/ui/pages/ajouter_ou_modifier_emp.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'HomeEmp.dart';
 import 'ajouter_ou_modifier_mesure.dart';
 import 'detection.dart';
 import 'mesure.dart';
+import '/../../authentification/SelectLogin.dart';
 
 void main()  async
 {
-   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
-   runApp(MyApp());
+  runApp(MyApp());
   // runApp(const MyApp());
 }
 
@@ -78,9 +78,10 @@ class MyApp extends StatelessWidget {
 
 
       ),
-      home: HomeAdmin(),
+      home: SelectLogin(),
     );
   } //   Widget
+
 } // class
 
 

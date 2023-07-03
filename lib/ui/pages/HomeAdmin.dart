@@ -1,17 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../authentification/SignIn.dart';
+
 class HomeAdmin extends StatefulWidget {
+  final String userName;
+
+  HomeAdmin({required this.userName});
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomeAdmin> {
+  // Method to handle the logout action
+  void _logout() {
+    print('logout');
+    // Implement your logout logic here
+    // For example, clear the user session and navigate to the signup screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignIn()),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF7F4E9),
-      drawer: MyDrawer(),
+      drawer: MyDrawer(userName: widget.userName, onLogout: _logout),
       appBar: AppBar(
         title: Text('Accueil'),
       ),
@@ -34,13 +49,6 @@ class _HomePageState extends State<HomeAdmin> {
             ),
 
             SizedBox(height: 10),
-            /* ListTile(
-              leading: Icon(Icons.photo_camera, color: Colors.teal, size: 100),
-              contentPadding: EdgeInsets.symmetric(horizontal: 145),
-              onTap: () {
-                Navigator.pushNamed(context, "/scan");
-              },
-            ),*/
             CustomButton(
               title: 'Scan',
               icon: Icons.photo_camera,
@@ -179,7 +187,13 @@ class DoubleCurvedClipper extends CustomClipper<Path> {
 }
 
 class MyDrawer extends StatelessWidget {
-  const MyDrawer();
+  final String userName;
+  final VoidCallback onLogout;
+
+  const MyDrawer({
+    required this.userName,
+    required this.onLogout,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +223,7 @@ class MyDrawer extends StatelessWidget {
             children: [
               SizedBox(height: 30),
               Text(
-                'Admin',
+                userName,
                 style: TextStyle(
                   fontFamily: 'Pacifico',
                   fontSize: 30.0,
@@ -230,7 +244,8 @@ class MyDrawer extends StatelessWidget {
               ),
 
               SizedBox(height: 400),
-              Text(
+              GestureDetector(
+                child:Text(
                 'Déconnexion',
                 style: TextStyle(
                   fontFamily: 'Source Sans Pro',
@@ -240,8 +255,8 @@ class MyDrawer extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
-
+              onTap: onLogout,
+              ),
             ],
           ),
         ],

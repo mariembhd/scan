@@ -1,60 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:scan/authentification/SignUp.dart';
+
+import '../../authentification/SignIn.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeEmp extends StatefulWidget {
+  final String email;
+
+  HomeEmp({required this.email});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomeEmp> {
+  bool RcanAccessScan = false; // Declare RcanAccessScan variable
+  bool RcanAccessStatistics = false;
+  bool RcanAccessGallery = false;
+  String userName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEmployeValues(); // Call the function to fetch employee values and update RcanAccessScan
+  }
+
+  void fetchEmployeValues() async {
+    CollectionReference employeesCollection =
+    FirebaseFirestore.instance.collection('employes');
+    QuerySnapshot snapshot = await employeesCollection
+        .where('email', isEqualTo: widget.email)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+        setState(() {
+         RcanAccessGallery = snapshot.docs[0]['canAccessGallery'];
+         RcanAccessStatistics = snapshot.docs[0]['canAccessStatistics'];
+         RcanAccessScan = snapshot.docs[0]['canAccessScan'];
+         userName = snapshot.docs[0]['nom'];
+      });
+
+    } else {
+      // Handle the case when the document does not exist for the given email
+      setState(() {
+        RcanAccessGallery = false;
+        RcanAccessStatistics = false;
+        RcanAccessScan = false;
+      });
+    }
+  }
+
+
+  // Method to handle the logout action
+  void _logout() {
+    print('logout');
+    // Implement your logout logic here
+    // For example, clear the user session and navigate to the signup screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignIn()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF7F4E9),
-      drawer: MyDrawer(),
+      drawer: MyDrawer(userName: userName, onLogout: _logout),
       appBar: AppBar(
         title: Text('Accueil'),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-              Positioned(
+            Positioned(
               top: 0,
               child: Image.asset(
                 'assets/logo2.png',
                 width: 366,
                 height: 216,
-                /*width: 325,
-                height: 200,
-                width: 466,
-                height: 192,*/
               ),
             ),
-
             SizedBox(height: 20),
-            /* ListTile(
-              leading: Icon(Icons.photo_camera, color: Colors.teal, size: 100),
-              contentPadding: EdgeInsets.symmetric(horizontal: 145),
-              onTap: () {
-                Navigator.pushNamed(context, "/scan");
-              },
-            ),*/
-            CustomButton(
-              title: 'Scan',
-              icon: Icons.photo_camera,
-              onClick: () {
-                Navigator.pushNamed(context, "/scan");
-              },
-            ),
+            if (RcanAccessScan)
+              CustomButton(
+                title: 'Scan',
+                icon: Icons.photo_camera,
+                onClick: () {
+                  Navigator.pushNamed(context, "/scan");
+                },
+              ),
             SizedBox(height: 30),
-            CustomButton(
-              title: 'Galerie',
-              icon: Icons.image_outlined,
-              onClick: () {
-                Navigator.pushNamed(context, "/galerie");
-              },
-            ),
-
+            if (RcanAccessGallery)
+              CustomButton(
+                title: 'Galerie',
+                icon: Icons.image_outlined,
+                onClick: () {
+                  Navigator.pushNamed(context, "/galerie");
+                },
+              ),
             SizedBox(height: 30),
             CustomButton(
               title: 'Mesures',
@@ -64,15 +108,15 @@ class _HomePageState extends State<HomeEmp> {
               },
             ),
             SizedBox(height: 30),
-            CustomButton(
-              title: 'Statistiques',
-              icon: Icons.assessment,
-              onClick: () {
-                Navigator.pushNamed(context, "/statistique");
-              },
-            ),
+            if (RcanAccessStatistics)
+              CustomButton(
+                title: 'Statistiques',
+                icon: Icons.assessment,
+                onClick: () {
+                  Navigator.pushNamed(context, "/statistique");
+                },
+              ),
             SizedBox(height: 35),
-
             Positioned(
               bottom: 0,
               left: 0,
@@ -81,7 +125,7 @@ class _HomePageState extends State<HomeEmp> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 150,
-                  color: Color(0xFF16a1b1), // Replace with your desired color
+                  color: Color(0xFF16a1b1),
                 ),
               ),
             ),
@@ -97,21 +141,21 @@ Widget CustomButton({
   required IconData icon,
   required VoidCallback onClick,
   Color? backgroundColor,
-  double iconSize = 28.0, // Specify the desired icon size
-  double fontSize = 25.0, // Specify the desired font size
+  double iconSize = 28.0,
+  double fontSize = 25.0,
 }) {
   return Container(
     width: 300,
     child: ElevatedButton(
       onPressed: onClick,
       style: ElevatedButton.styleFrom(
-        primary: backgroundColor, // Use the provided backgroundColor
+        primary: backgroundColor,
       ),
       child: Row(
         children: [
           Icon(
             icon,
-            size: iconSize, // Set the size of the icon
+            size: iconSize,
           ),
           SizedBox(
             width: 35,
@@ -120,7 +164,7 @@ Widget CustomButton({
           Text(
             title,
             style: TextStyle(
-              fontSize: fontSize, // Set the font size of the text
+              fontSize: fontSize,
             ),
           ),
         ],
@@ -138,14 +182,14 @@ class DoubleCurvedClipper extends CustomClipper<Path> {
 
     final firstControlPoint = Offset(size.width / 4, size.height * 0.3);
     final firstEndPoint = Offset(size.width / 2, size.height * 0.4);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
-        firstEndPoint.dx, firstEndPoint.dy);
+    path.quadraticBezierTo(
+        firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
 
     final secondControlPoint =
     Offset(size.width - (size.width / 4), size.height * 0.5);
     final secondEndPoint = Offset(size.width, size.height * 0.4);
-    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
-        secondEndPoint.dx, secondEndPoint.dy);
+    path.quadraticBezierTo(
+        secondControlPoint.dx, secondControlPoint.dy, secondEndPoint.dx, secondEndPoint.dy);
 
     path.lineTo(size.width, size.height * 0.4);
     path.lineTo(size.width, size.height);
@@ -161,7 +205,13 @@ class DoubleCurvedClipper extends CustomClipper<Path> {
 }
 
 class MyDrawer extends StatelessWidget {
-  const MyDrawer();
+  final String userName;
+  final VoidCallback onLogout;
+
+  const MyDrawer({
+    required this.userName,
+    required this.onLogout,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -176,12 +226,10 @@ class MyDrawer extends StatelessWidget {
             ),
             child: CircleAvatar(
               radius: 30.0,
-              backgroundColor:
-              Color(0xFFF7F4E9), // Couleur d'arrière-plan souhaitée
+              backgroundColor: Color(0xFFF7F4E9),
               child: Icon(
                 Icons.account_circle_sharp,
                 size: 150.0,
-                //  Color(0xFF16a1b1),
                 color: Color(0xFF46494C),
               ),
             ),
@@ -191,7 +239,7 @@ class MyDrawer extends StatelessWidget {
             children: [
               SizedBox(height: 30),
               Text(
-                'Employé',
+                userName,
                 style: TextStyle(
                   fontFamily: 'Pacifico',
                   fontSize: 30.0,
@@ -210,20 +258,21 @@ class MyDrawer extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               SizedBox(height: 400),
-              Text(
-                'Déconnexion',
-                style: TextStyle(
-                  fontFamily: 'Source Sans Pro',
-                  color: Color(0xFF46494C),
-                  fontSize: 15.0,
-                  letterSpacing: 2.5,
-                  fontWeight: FontWeight.bold,
+              GestureDetector(
+                // Call the logout callback
+                child: Text(
+                  'Déconnexion',
+                  style: TextStyle(
+                    fontFamily: 'Source Sans Pro',
+                    color: Color(0xFF46494C),
+                    fontSize: 15.0,
+                    letterSpacing: 2.5,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                onTap: onLogout,
               ),
-
-
             ],
           ),
         ],

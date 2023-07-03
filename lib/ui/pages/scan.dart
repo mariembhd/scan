@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as path;
+import 'package:intl/date_symbol_data_local.dart';
 
 class Scan extends StatefulWidget {
   @override
@@ -16,9 +18,10 @@ class Scan extends StatefulWidget {
 }
 
 class _ScanState extends State<Scan> {
+
   TextEditingController _controllerCode = TextEditingController();
   bool _isTextVisible = false;
-  bool visible = true;
+  bool visible = false;
   XFile? file;
   File? _image;
   String imageUrl = '';
@@ -26,6 +29,8 @@ class _ScanState extends State<Scan> {
   double nH = 0.0;
   String etat = '';
   String? message = "";
+  bool savingImage = false; // Track the saving image process
+
 
   Future<void> sendImageToPython(_image) async {
     if (_image == null) {
@@ -55,7 +60,7 @@ class _ScanState extends State<Scan> {
     } else {
       // Handle error
     }
-   /* if (imageResponse.statusCode == 200) {
+    /* if (imageResponse.statusCode == 200) {
       print('Image envoyée avec succès');
     } else {
       print(
@@ -73,43 +78,37 @@ class _ScanState extends State<Scan> {
   Future<String> comparaison(
       String codeSaisi, double largeur, double longueur) async {
     final CollectionReference _mesure =
-        FirebaseFirestore.instance.collection('mesure');
+    FirebaseFirestore.instance.collection('mesure');
     QuerySnapshot querySnapshot =
-        await _mesure.where('code', isEqualTo: codeSaisi).get();
+    await _mesure.where('code', isEqualTo: codeSaisi).get();
     String etat = '';
     print('codeSaisi: $codeSaisi');
-   print("querySnapshot.docs.isNotEmpty $querySnapshot.docs.isNotEmpty ");
+    print("querySnapshot.docs.isNotEmpty $querySnapshot.docs.isNotEmpty ");
     if (querySnapshot.docs.isNotEmpty) {
       String largeurRef = (querySnapshot.docs[0].data()
-          as Map<String, dynamic>)['largeur'] ;
+      as Map<String, dynamic>)['largeur'] ;
       String longueurRef = (querySnapshot.docs[0].data()
-          as Map<String, dynamic>)['longueur'] ;
+      as Map<String, dynamic>)['longueur'] ;
       double tolerance = 0.5;
-      print("largeurRef $largeurRef");
-      print("largeur $largeur");
-      print("tolerance $tolerance");
+
       if ((double.parse(largeurRef) - largeur).abs() <= tolerance &&
           (double.parse(longueurRef)  - longueur).abs() <= tolerance)
-        { print('non défaillante $etat');
-          etat = "non défaillante";
-          print('$etat');
-        }
+      {
+        etat = "non défaillante";
+
+      }
       else{
-        print('défaillante $etat');
         etat = "défaillante";
-        print('$etat');
+
       }
     } else {
       etat = "Code non trouvé";
-      print('$etat');
-
     }
 
     return etat;
   }
-
-  // getImage
   Future<void> getImage(ImageSource source) async {
+    print('getImage');
     XFile? pickedFile = await ImagePicker().pickImage(source: source);
     _isTextVisible = false;
     visible = true;
@@ -120,19 +119,24 @@ class _ScanState extends State<Scan> {
     setState(() {
       _image = imageTemporary;
     });
-
-    String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
-
-    // Upload to Firebase storage
-    Reference referenceRoot = FirebaseStorage.instance.ref();
-    Reference referenceDirImages = referenceRoot.child('images');
-    Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
-
     try {
+
+      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+      // Upload to Firebase storage
+      Reference referenceRoot = FirebaseStorage.instance.ref();
+      Reference referenceDirImages = referenceRoot.child('images');
+      Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
       await referenceImageToUpload.putFile(File(pickedFile.path));
       imageUrl = await referenceImageToUpload.getDownloadURL();
-    } catch (error) {}
+    } catch (error) {
+      // Handle the error
+    } finally {
+      setState(() {
+        savingImage = false; // Set savingImage to false when the image saving process is finished
+      });
+    }
   }
+
 
   final _reference = FirebaseFirestore.instance.collection('images');
 
@@ -201,58 +205,58 @@ class _ScanState extends State<Scan> {
               ),
             SizedBox(height: 10),
             Visibility(
-            visible :visible ,
-            child : ElevatedButton(
-              onPressed: () async {
-                _isTextVisible = true;
+                visible :visible ,
+                child : ElevatedButton(
+                  onPressed: () async {
+                    _isTextVisible = true;
 
-                if (_controllerCode.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Le champ code est requis')),
-                  );
-                  return;
-                }
-                if (_image == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Scanner ou importer une image')),
-                  );
-                  return;
-                }
-                String itemCode = _controllerCode.text;
-                await fetchImageDetails(_image, itemCode);
-                comparaison(itemCode, nW, nH).then((value) {
-                    setState(() {
+                    if (_controllerCode.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Le champ code est requis')),
+                      );
+                      return;
+                    }
+                    if (_image == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Scanner ou importer une image')),
+                      );
+                      return;
+                    }
+                    String itemCode = _controllerCode.text;
+                    await fetchImageDetails(_image, itemCode);
+                    comparaison(itemCode, nW, nH).then((value) {
+                      setState(() {
 
-                   etat = value;
-                  });
-                 });
+                        etat = value;
+                      });
+                    });
 
 
-                // Affichage des résultats
-                if (_image != null) {
-                  print("image non null");
-                  Column(
-                    children: [
+                    // Affichage des résultats
+                    if (_image != null) {
+                      print("image non null");
+                      Column(
+                        children: [
 
-                      SizedBox(height: 10),
-                      Text(
-                        'Largeur : $nW cm',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      Text(
-                        'Longueur : $nH cm',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      Text(
-                        'Etat :  $etat',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                    ],
-                  );
-                }
-              },
-              child: Text('Afficher résultat'),
-            )),
+                          SizedBox(height: 10),
+                          Text(
+                            'Largeur : $nW cm',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          Text(
+                            'Longueur : $nH cm',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          Text(
+                            'Etat :  $etat',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                  child: Text('Afficher résultat'),
+                )),
             if (_isTextVisible)
               Column(
                 children: [
@@ -272,41 +276,21 @@ class _ScanState extends State<Scan> {
                 ],
               ),
 
-            // Affichage des résultats
-            /* if (_image != null)
-              Column(
-                children: [
-                  Image.file(
-                    _image!,
-                    width: 250,
-                    height: 250,
-                    fit: BoxFit.cover,
-                  ),
-                  SizedBox(height: 10),
-                Text(
-                    'Largeur : $nW cm',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  Text(
-                    'Longueur : $nH cm',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  Text(
-                    'Etat :  $etat',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                ],
-              ),*/
-
             // enregistrement
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async {
+                setState(() {
+                  savingImage = true; // Show CircularProgressIndicator
+                });
                 _isTextVisible = false;
                 if (imageUrl.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Scanner ou importer une image')),
                   );
+                  setState(() {
+                    savingImage = false; // Hide CircularProgressIndicator
+                  });
                   return;
                 }
 
@@ -314,24 +298,33 @@ class _ScanState extends State<Scan> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Le champ code est requis')),
                   );
+                  setState(() {
+                    savingImage = false; // Hide CircularProgressIndicator
+                  });
                   return;
                 }
 
                 String itemCode = _controllerCode.text;
+                String type = itemCode.length >= 3 ? itemCode.substring(0, itemCode.length - 3) : '';
+                await initializeDateFormatting('fr_FR', null);
+                DateTime now = DateTime.now();
+                DateFormat formatter = DateFormat('dd MMMM yyyy', 'fr_FR');
+                String formattedDate = formatter.format(now);
                 Map<String, String> dataToSend = {
                   'code': itemCode,
                   'image': imageUrl,
                   'largeur': nW.toString(),
                   'longueur': nH.toString(),
                   'etat': etat,
-                  'type': itemCode.substring(0, itemCode.length - 3),
+                  'type': type,
+                  'createdAt' : formattedDate,
                 };
-                print('dataToSend $dataToSend');
                 await _reference.add(dataToSend);
-                print('after dataToSend');
                 _controllerCode.clear();
                 setState(() {
                   _image = null;
+                  imageUrl = '' ;
+                  savingImage = false; // Hide CircularProgressIndicator
                 });
 
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -340,6 +333,11 @@ class _ScanState extends State<Scan> {
                 );
               },
               child: Text('Enregistrer'),
+            ),
+            SizedBox(height: 10),
+            Visibility(
+              visible: savingImage, // Show CircularProgressIndicator when saving
+              child: CircularProgressIndicator(),
             ),
           ],
         ),
